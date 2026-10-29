@@ -1,0 +1,83 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import { fmtRange, slugify } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const events = await getCollection('events');
+  return events.map((event) => ({ params: { slug: event.id }, props: { event } }));
+}
+
+const { event } = Astro.props;
+const { Content } = await render(event);
+const { title, start, end, format, location, organiser, summary, url, tags } = event.data;
+---
+
+<Base title={title} description={summary}>
+  <PageHeader eyebrow="Event" title={title} intro={summary} crumbs={[{ label: 'Events', href: '/events/' }]} />
+  <section class="section section--white">
+    <div class="container event-layout">
+      <aside class="event-facts" data-reveal>
+        <dl>
+          <div><dt>Date</dt><dd><time datetime={start.toISOString().slice(0, 10)}>{fmtRange(start, end)}</time></dd></div>
+          <div><dt>Format</dt><dd>{format}</dd></div>
+          <div><dt>Location</dt><dd>{location}</dd></div>
+          {organiser && <div><dt>Organiser</dt><dd>{organiser}</dd></div>}
+        </dl>
+        {
+          url && (
+            <a class="btn btn--primary" href={url} rel="noopener" target="_blank">
+              Event website<span class="visually-hidden"> (opens in a new tab)</span>
+            </a>
+          )
+        }
+        <ul class="tags" aria-label="Tags">{tags.map((t) => <li><a class="tag" href={`/tags/${slugify(t)}/`}>{t}</a></li>)}</ul>
+      </aside>
+      <div class="prose" data-reveal><Content /></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .event-layout {
+    display: grid;
+    grid-template-columns: 20rem minmax(0, 44rem);
+    gap: 3rem 5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .event-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .event-facts {
+    display: grid;
+    gap: 1.5rem;
+    padding: 1.75rem;
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+  }
+
+  dl {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  dt {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange-ink);
+  }
+
+  dd {
+    margin: 0.2rem 0 0;
+    font-weight: 600;
+    color: var(--ink);
+  }
+</style>

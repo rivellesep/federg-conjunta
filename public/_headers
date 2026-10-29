@@ -1,0 +1,16 @@
+# Cloudflare Pages headers
+# Practice project: keep every deployed page out of search engines,
+# so it is never mistaken for the official FEDERG website.
+/*
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  X-Frame-Options: DENY
+
+# Hashed build assets never change: cache them for a year
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/pagefind/*
+  Cache-Control: public, max-age=3600

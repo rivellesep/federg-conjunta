@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import EventList from '../../components/EventList.astro';
+import { getEvents } from '../../lib/content';
+
+const { upcoming, past } = await getEvents();
+---
+
+<Base title="Events" description="Upcoming and past events where FEDERG takes part.">
+  <PageHeader
+    eyebrow="News & Events"
+    title="Events"
+    intro="Congresses, awareness days and meetings where FEDERG brings the patient voice."
+    crumbs={[{ label: 'Events', href: '/events/' }]}
+  />
+  <section class="section section--white" aria-labelledby="up-title">
+    <div class="container">
+      <h2 id="up-title" class="list-title">Upcoming</h2>
+      {upcoming.length ? <EventList events={upcoming} /> : <p class="lead">No upcoming events right now.</p>}
+    </div>
+  </section>
+  {
+    past.length > 0 && (
+      <section class="section" aria-labelledby="past-title">
+        <div class="container">
+          <h2 id="past-title" class="list-title">Past events</h2>
+          <EventList events={past} muted />
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .list-title {
+    margin-bottom: 2rem;
+    font-size: var(--step-3);
+  }
+</style>

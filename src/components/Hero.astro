@@ -1,0 +1,814 @@
+---
+// Home hero: the first word rotates and the glow behind it changes with it.
+// Navy panel and EU stars from Albert's version, word animation and pause button from Enric's.
+import { getCollection } from 'astro:content';
+import Stars from './Stars.astro';
+
+const members = await getCollection('members');
+
+// Icon tints sit on navy, so they only need to be bright, not readable as text
+const words = [
+  { label: 'Speak up', tone: 'orange', tint: '#FF6400', icon: 'bubble' },
+  { label: 'Connect', tone: 'blue', tint: '#7B96F2', icon: 'globe' },
+  { label: 'Research', tone: 'yellow', tint: '#FFCD05', icon: 'spark' },
+  { label: 'Care', tone: 'warm', tint: '#FF9A5C', icon: 'kidney' },
+];
+
+const stats = [
+  { value: String(members.length), label: 'Member associations' },
+  { value: '150+', label: 'Rare kidney diseases' },
+  { value: '80%', label: 'Of genetic origin' },
+];
+---
+
+<section class="hero" aria-labelledby="hero-title" data-hero>
+  <!-- Shared filters that give the icons their soft inflated look -->
+  <svg class="hero__defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="puff" filterUnits="userSpaceOnUse" x="-15" y="-15" width="130" height="140" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="5.5" result="blur"></feGaussianBlur>
+        <feDiffuseLighting in="blur" surfaceScale="8" diffuseConstant="1.1" lighting-color="#fff" result="diff">
+          <feDistantLight azimuth="225" elevation="50"></feDistantLight>
+        </feDiffuseLighting>
+        <feComposite in="SourceGraphic" in2="diff" operator="arithmetic" k1="1.12" result="shade"></feComposite>
+        <feSpecularLighting in="blur" surfaceScale="8" specularConstant="1.05" specularExponent="26" lighting-color="#fff" result="spec">
+          <fePointLight x="22" y="4" z="95"></fePointLight>
+        </feSpecularLighting>
+        <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn"></feComposite>
+        <feComposite in="shade" in2="specIn" operator="arithmetic" k2="1" k3="0.9" result="lit"></feComposite>
+        <feComposite in="lit" in2="SourceAlpha" operator="in" result="body"></feComposite>
+        <feOffset in="blur" dy="7" result="off"></feOffset>
+        <feFlood flood-color="#05051a" flood-opacity="0.35"></feFlood>
+        <feComposite in2="off" operator="in" result="shadow"></feComposite>
+        <feMerge>
+          <feMergeNode in="shadow"></feMergeNode>
+          <feMergeNode in="body"></feMergeNode>
+        </feMerge>
+      </filter>
+      <filter id="puff-sm" filterUnits="userSpaceOnUse" x="-10" y="-10" width="120" height="120" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.6" result="blur"></feGaussianBlur>
+        <feSpecularLighting in="blur" surfaceScale="3" specularConstant="0.9" specularExponent="18" lighting-color="#fff" result="spec">
+          <fePointLight x="22" y="4" z="80"></fePointLight>
+        </feSpecularLighting>
+        <feComposite in="spec" in2="SourceAlpha" operator="in" result="specIn"></feComposite>
+        <feComposite in="SourceGraphic" in2="specIn" operator="arithmetic" k2="1" k3="0.8" result="lit"></feComposite>
+        <feComposite in="lit" in2="SourceAlpha" operator="in"></feComposite>
+      </filter>
+      <clipPath id="globe-clip"><circle cx="50" cy="50" r="40"></circle></clipPath>
+    </defs>
+  </svg>
+
+  <div class="hero__panel">
+    <div class="hero__layers" aria-hidden="true">
+      {words.map((w, i) => <div class={`hero__layer hero__layer--${w.tone}`} data-layer={i} />)}
+    </div>
+
+    <Stars size="calc(var(--u) * 640)" x="83%" y="47%" opacity={0.42} />
+
+    <div class="hero__content">
+      <p class="hero__note">
+        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle>
+          <path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        </svg>
+        <span><strong>Practice project</strong>, not the official FEDERG website. The official site is <a href="https://federg.org/" rel="noopener">federg.org</a>.</span>
+      </p>
+
+      <h1 class="hero__title" id="hero-title">
+        <span class="visually-hidden">Speak up, connect, research and care for rare kidneys.</span>
+        <span class="hero__slot" aria-hidden="true">
+          {
+            words.map((w, i) => (
+              <span class="hero__word" data-word={i} style={`--tint:${w.tint}`}>
+                <span class="hero__icon" data-icon>
+                  {w.icon === 'bubble' && (
+                    <svg viewBox="0 0 100 100">
+                      <path
+                        filter="url(#puff)"
+                        fill="currentColor"
+                        d="M50 14c22 0 38 13 38 31S72 76 50 76c-4 0-8-.4-11.6-1.3L22 86c-2 1.3-4.4-.6-3.6-2.9l4.4-12.4C16 64.6 12 55.3 12 45c0-18 16-31 38-31Z"
+                      />
+                      <g filter="url(#puff-sm)" fill="currentColor">
+                        <circle cx="34" cy="45" r="5.6" />
+                        <circle cx="50" cy="45" r="5.6" />
+                        <circle cx="66" cy="45" r="5.6" />
+                      </g>
+                    </svg>
+                  )}
+                  {w.icon === 'globe' && (
+                    <svg viewBox="0 0 100 100">
+                      <circle filter="url(#puff)" fill="currentColor" cx="50" cy="50" r="40" />
+                      <g clip-path="url(#globe-clip)" fill="none" stroke-linecap="round">
+                        <g stroke="rgb(0 0 0 / 18%)" stroke-width="2.6">
+                          <ellipse cx="50" cy="50" rx="16" ry="40" />
+                          <path d="M50 10v80M10 50h80M16 31h68M16 69h68" />
+                        </g>
+                        <g stroke="rgb(255 255 255 / 30%)" stroke-width="1.4" transform="translate(1 1.2)">
+                          <ellipse cx="50" cy="50" rx="16" ry="40" />
+                          <path d="M50 10v80M10 50h80M16 31h68M16 69h68" />
+                        </g>
+                      </g>
+                    </svg>
+                  )}
+                  {w.icon === 'spark' && (
+                    <svg viewBox="0 0 100 100">
+                      <path
+                        filter="url(#puff)"
+                        fill="currentColor"
+                        d="M48 10c3 23 12 33 34 37-22 4-31 14-34 37-3-23-12-33-34-37 22-4 31-14 34-37Z"
+                      />
+                      <circle filter="url(#puff)" fill="currentColor" cx="81" cy="19" r="7.5" />
+                      <circle filter="url(#puff)" fill="currentColor" cx="80" cy="80" r="5.5" />
+                    </svg>
+                  )}
+                  {w.icon === 'kidney' && (
+                    <svg viewBox="0 0 100 100">
+                      <path
+                        filter="url(#puff)"
+                        fill="currentColor"
+                        d="M60 12c20-1 31 18 29 40-2 23-17 38-36 37-15-1-21-11-15-21 4-7 5-12 0-17-11-10-6-38 22-39Z"
+                      />
+                    </svg>
+                  )}
+                </span>
+                <span class="hero__text">{w.label}</span>
+              </span>
+            ))
+          }
+        </span>
+        <span class="hero__line2" aria-hidden="true">for rare kidneys.</span>
+      </h1>
+
+      <div class="hero__row">
+        <div class="hero__buttons">
+          <a class="hero__btn" href="/about/what-we-do/" data-flash>
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <g fill="currentColor">
+                <circle cx="12" cy="3.5" r="1.3"></circle><circle cx="16.25" cy="4.64" r="1.3"></circle>
+                <circle cx="19.36" cy="7.75" r="1.3"></circle><circle cx="20.5" cy="12" r="1.3"></circle>
+                <circle cx="19.36" cy="16.25" r="1.3"></circle><circle cx="16.25" cy="19.36" r="1.3"></circle>
+                <circle cx="12" cy="20.5" r="1.3"></circle><circle cx="7.75" cy="19.36" r="1.3"></circle>
+                <circle cx="4.64" cy="16.25" r="1.3"></circle><circle cx="3.5" cy="12" r="1.3"></circle>
+                <circle cx="4.64" cy="7.75" r="1.3"></circle><circle cx="7.75" cy="4.64" r="1.3"></circle>
+              </g>
+            </svg>
+            What we do
+          </a>
+          <a class="hero__btn" href="/about/members/">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6">
+              <circle cx="9" cy="12" r="6"></circle>
+              <circle cx="15" cy="12" r="6"></circle>
+            </svg>
+            Our members
+          </a>
+        </div>
+        <p class="hero__caption">
+          <span>FEDERG is the European federation of patient associations</span>{' '}
+          <span>for people living with rare and genetic kidney diseases.</span>
+        </p>
+      </div>
+      <button class="hero__pause" type="button" aria-pressed="false" data-hero-pause hidden>
+        <span class="hero__pause-icon" aria-hidden="true"></span>
+        <span data-pause-label>Pause animation</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="hero__strip">
+    <svg class="hero__notch" viewBox="0 0 1440 62" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 62 H1062 C1092 62 1098 54 1116 34 C1138 9 1146 1 1178 1 H1440 V62 Z"></path>
+    </svg>
+    <div class="hero__notch-tools">
+      <a class="hero__scroll" href="#mission-title">↓ Scroll to learn more</a>
+    </div>
+
+    <div class="hero__strip-inner">
+      <h2 class="hero__strip-title">Nothing great is <br />made alone</h2>
+      <dl class="hero__stats">
+        {
+          stats.map((s) => (
+            <div class="hero__stat">
+              <dt>{s.label}</dt>
+              <dd>{s.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <svg class="hero__sprout" viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 104c0-22 1-38 4-52"></path>
+        <path d="M63 60c-16 2-30-6-34-22 15-2 29 4 34 22Z"></path>
+        <path d="M63 50c4-17 18-27 36-25-2 18-17 27-36 25Z"></path>
+        <path d="M66 41c8-5 15-9 24-12M47 47c-6-3-11-6-16-8" opacity=".55"></path>
+        <path d="M28 104h66M40 110h40"></path>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    --u: min(calc(100vw / 1440), calc(100svh / 960));
+    position: relative;
+    height: max(560px, calc(100svh - var(--header-h)));
+    display: grid;
+    grid-template-rows: 75fr 25fr;
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  .hero__defs {
+    position: absolute;
+  }
+
+  /* Panel */
+
+  .hero__panel {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--navy);
+    color: var(--on-navy);
+  }
+
+  .hero__layers,
+  .hero__layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero__layer {
+    opacity: 0;
+    transform: scale(1.08);
+    will-change: opacity, transform;
+  }
+
+  .hero__layer[data-layer='0'] {
+    opacity: 1;
+  }
+
+  /* Each word lights the navy panel with its own brand colour */
+  .hero__layer {
+    --glow: 255 100 0;
+    --glow-a: 42%;
+    background:
+      radial-gradient(60% 70% at 86% 76%, rgb(var(--glow) / var(--glow-a)), transparent 70%),
+      radial-gradient(45% 55% at 32% 105%, rgb(var(--glow) / calc(var(--glow-a) / 2)), transparent 70%),
+      var(--navy);
+  }
+
+  .hero__layer--blue {
+    --glow: 61 91 196;
+    --glow-a: 70%;
+  }
+
+  .hero__layer--yellow {
+    --glow: 255 205 5;
+    --glow-a: 24%;
+  }
+
+  .hero__layer--warm {
+    --glow: 255 140 70;
+    --glow-a: 30%;
+  }
+
+  .hero__panel :global(.stars) {
+    z-index: 1;
+  }
+
+  /* The pause button also stops the stars */
+  .hero.is-paused :global(.stars) {
+    animation-play-state: paused;
+  }
+
+  /* Film grain */
+  .hero__panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.3;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+  }
+
+  /* Practice project notice */
+
+  .hero__note {
+    position: absolute;
+    left: calc(var(--u) * 112);
+    top: calc(var(--u) * 44);
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.55em;
+    max-width: calc(100% - var(--u) * 224);
+    padding: 0.5em 1em;
+    border: 1px solid rgb(255 205 5 / 55%);
+    border-radius: 999px;
+    background: rgb(255 205 5 / 10%);
+    font-size: max(13px, calc(var(--u) * 15));
+    line-height: 1.4;
+  }
+
+  .hero__note svg {
+    flex-shrink: 0;
+    margin-top: 0.15em;
+    color: var(--eu-yellow);
+  }
+
+  .hero__note a {
+    color: var(--eu-yellow);
+    text-underline-offset: 3px;
+  }
+
+  /* Headline */
+
+  .hero__title {
+    position: absolute;
+    left: calc(var(--u) * 112);
+    top: calc(var(--u) * 150);
+    margin: 0;
+    font-size: calc(var(--u) * 164);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--on-navy);
+    white-space: nowrap;
+  }
+
+  .hero__slot {
+    position: relative;
+    display: block;
+    height: 0.9em;
+  }
+
+  .hero__word {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.06em;
+    height: 0.9em;
+    opacity: 0;
+    will-change: opacity, transform, filter;
+  }
+
+  .hero__word[data-word='0'] {
+    opacity: 1;
+  }
+
+  .hero__icon {
+    position: relative;
+    flex: 0 0 auto;
+    width: 1.02em;
+    height: 1.02em;
+    margin-left: -0.04em;
+    isolation: isolate;
+    color: var(--tint);
+    will-change: transform;
+  }
+
+  .hero__icon svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* Orange on navy: 5.3:1 */
+  .hero__text {
+    color: var(--orange);
+  }
+
+  .hero__line2 {
+    display: block;
+  }
+
+  /* Buttons and caption */
+
+  .hero__row {
+    position: absolute;
+    left: calc(var(--u) * 112);
+    right: calc(var(--u) * 112);
+    top: calc(var(--u) * 545);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 36);
+  }
+
+  .hero__buttons {
+    display: flex;
+    gap: calc(var(--u) * 14);
+  }
+
+  .hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    height: max(44px, calc(var(--u) * 58));
+    padding: 0 max(16px, calc(var(--u) * 22));
+    border: 1.4px solid rgb(255 255 255 / 70%);
+    border-radius: 7px;
+    color: var(--on-navy);
+    font-size: max(15px, calc(var(--u) * 17));
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color 0.35s var(--ease-out),
+      color 0.35s var(--ease-out);
+  }
+
+  /* Orange fill with navy text: 5.3:1 */
+  .hero__btn:hover,
+  .hero__btn.is-flash {
+    border-color: var(--orange);
+    background: var(--orange);
+    color: var(--navy);
+  }
+
+  .hero__caption {
+    max-width: 34em;
+    font-size: max(15px, calc(var(--u) * 18.5));
+    line-height: 1.4;
+    color: var(--on-navy-soft);
+  }
+
+  .hero__caption span {
+    display: block;
+  }
+
+  /* Stats strip */
+
+  .hero__strip {
+    position: relative;
+    z-index: 3;
+    background: var(--paper);
+  }
+
+  .hero__notch {
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    width: 100%;
+    height: calc(var(--u) * 62);
+    margin-bottom: -1px;
+    fill: var(--paper);
+  }
+
+  .hero__notch-tools {
+    position: absolute;
+    right: calc(var(--u) * 112);
+    bottom: calc(100% + var(--u) * 10);
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    height: calc(var(--u) * 46);
+  }
+
+  .hero__scroll,
+  .hero__pause {
+    font-size: max(13px, calc(var(--u) * 15));
+    color: var(--on-navy-soft);
+    text-decoration: none;
+  }
+
+  /* The scroll link sits on the light notch, not on the navy panel */
+  .hero__scroll {
+    color: var(--ink-soft);
+  }
+
+  .hero__scroll:hover {
+    color: var(--ink);
+  }
+
+  .hero__pause {
+    position: absolute;
+    left: calc(var(--u) * 112);
+    top: calc(var(--u) * 630);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .hero__pause[hidden] {
+    display: none;
+  }
+
+  .hero__pause:hover {
+    color: var(--on-navy);
+  }
+
+  .hero__pause-icon {
+    width: 0.7em;
+    height: 0.8em;
+    border-inline: 0.22em solid currentColor;
+  }
+
+  .hero__pause[aria-pressed='true'] .hero__pause-icon {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0.4em 0 0.4em 0.7em;
+    border-color: transparent transparent transparent currentColor;
+  }
+
+  .hero__strip-inner {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 330) auto 1fr;
+    align-items: start;
+    gap: calc(var(--u) * 64);
+    height: 100%;
+    padding: calc(var(--u) * 54) calc(var(--u) * 112) 0;
+  }
+
+  .hero__strip-title {
+    font-size: max(20px, calc(var(--u) * 29));
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__stats {
+    display: flex;
+    gap: calc(var(--u) * 64);
+    margin: 0;
+  }
+
+  .hero__stat {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.4rem;
+  }
+
+  .hero__stat dd {
+    margin: 0;
+    font-size: max(34px, calc(var(--u) * 54));
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero__stat dt {
+    font-size: max(13px, calc(var(--u) * 16.5));
+    color: var(--ink-soft);
+  }
+
+  .hero__stat:first-child dd {
+    color: var(--orange-ink);
+  }
+
+  .hero__sprout {
+    justify-self: end;
+    width: calc(var(--u) * 120);
+    height: calc(var(--u) * 120);
+    margin-top: calc(var(--u) * -18);
+    color: var(--orange-ink);
+  }
+
+  /* Phones and portrait tablets: normal flow */
+  @media (max-width: 760px), (max-width: 1100px) and (orientation: portrait) {
+    .hero {
+      height: auto;
+      display: block;
+    }
+
+    .hero__panel {
+      padding: 1.5rem var(--gutter) 5.5rem;
+    }
+
+    .hero__note,
+    .hero__title,
+    .hero__row {
+      position: static;
+    }
+
+    .hero__note {
+      max-width: none;
+      margin-bottom: 2.5rem;
+      border-radius: 14px;
+    }
+
+    .hero__panel :global(.stars) {
+      --stars-size: min(110vw, 620px) !important;
+      --stars-x: 92% !important;
+      --stars-y: 62% !important;
+      --stars-opacity: 0.3 !important;
+    }
+
+    .hero__title {
+      font-size: clamp(48px, 14vw, 96px);
+      white-space: normal;
+    }
+
+    .hero__word {
+      white-space: nowrap;
+    }
+
+    .hero__row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-top: 2.5rem;
+    }
+
+    .hero__buttons {
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .hero__caption span {
+      display: inline;
+    }
+
+    .hero__notch {
+      height: 34px;
+    }
+
+    .hero__notch-tools {
+      right: var(--gutter);
+      bottom: calc(100% + 4px);
+      height: 30px;
+    }
+
+    .hero__scroll {
+      display: none;
+    }
+
+    .hero__pause {
+      position: static;
+      margin-top: 1.5rem;
+    }
+
+    .hero__strip-inner {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+      padding: 1.5rem var(--gutter) 3rem;
+    }
+
+    .hero__strip-title {
+      grid-column: 1 / -1;
+    }
+
+    .hero__stats {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem 1.25rem;
+    }
+
+    .hero__sprout {
+      position: absolute;
+      right: var(--gutter);
+      bottom: 3rem;
+      width: 84px;
+      height: 84px;
+      margin: 0;
+      align-self: end;
+    }
+  }
+</style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]')!;
+  const words = [...hero.querySelectorAll<HTMLElement>('[data-word]')];
+  const icons = words.map((w) => w.querySelector<HTMLElement>('[data-icon]')!);
+  const layers = [...hero.querySelectorAll<HTMLElement>('[data-layer]')];
+  const flashBtn = hero.querySelector<HTMLElement>('[data-flash]')!;
+  const pauseBtn = hero.querySelector<HTMLButtonElement>('[data-hero-pause]')!;
+  const pauseLabel = pauseBtn.querySelector<HTMLElement>('[data-pause-label]')!;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const SLOT = 1750; // ms per word
+  const ENTER = 500;
+  const LEAVE = 420;
+  const FADE = 770; // panel crossfade window, centred on each word change
+  const N = words.length;
+
+  const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+  const easeOut = (t: number) => 1 - (1 - t) ** 3;
+  const easeIn = (t: number) => t * t * t;
+  const smooth = (t: number) => t * t * (3 - 2 * t);
+  const TAU = Math.PI * 2;
+
+  // Long empty animation used as the clock, pausing it pauses everything
+  const clock = hero.animate([], { duration: 1e9 });
+
+  function render(t: number) {
+    const cycle = Math.floor(t / SLOT);
+    const idx = cycle % N;
+    const local = t - cycle * SLOT;
+
+    // Words
+    words.forEach((w, i) => {
+      if (i !== idx) {
+        if (w.style.opacity !== '0') w.style.opacity = '0';
+        return;
+      }
+      const e = easeOut(clamp01(local / ENTER));
+      const l = easeIn(clamp01((local - (SLOT - LEAVE)) / LEAVE));
+      const y = 0.32 * (1 - e) - 0.16 * l;
+      const blur = 10 * (1 - e) + 8 * l;
+      w.style.opacity = String(e * (1 - l));
+      w.style.transform = `translateY(${y.toFixed(4)}em) scale(${(0.96 + 0.04 * e).toFixed(4)})`;
+      w.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : 'none';
+
+      // Icon pops in 60 ms later, then floats gently
+      const ei = easeOut(clamp01((local - 60) / ENTER));
+      const bob = 0.028 * Math.sin((t / 3200) * TAU);
+      const rot = -14 * (1 - ei) + 3 * Math.sin((t / 4100) * TAU + 1);
+      icons[i].style.transform = `translateY(${bob.toFixed(4)}em) rotate(${rot.toFixed(3)}deg) scale(${(0.7 + 0.3 * ei).toFixed(4)})`;
+    });
+
+    // Panel colour: the incoming layer fades in over a window that straddles the word change
+    let base = idx;
+    let top = -1;
+    let w = 0;
+    if (local < FADE / 2) {
+      base = (idx - 1 + N) % N;
+      top = idx;
+      w = smooth(clamp01(0.5 + local / FADE));
+    } else if (local > SLOT - FADE / 2) {
+      top = (idx + 1) % N;
+      w = smooth(clamp01((local - (SLOT - FADE / 2)) / FADE));
+    }
+    if (t < FADE / 2) {
+      base = idx; // first word on load: nothing to fade from
+      top = -1;
+    }
+    layers.forEach((layer, i) => {
+      const op = i === top ? w : i === base ? 1 : 0;
+      layer.style.opacity = String(op);
+      layer.style.zIndex = i === top ? '2' : i === base ? '1' : '0';
+      if (op > 0) {
+        const dx = 2.2 * Math.sin((t / 9000) * TAU + i);
+        const dy = 1.6 * Math.cos((t / 11000) * TAU + i * 1.7);
+        layer.style.transform = `translate(${dx.toFixed(3)}%, ${dy.toFixed(3)}%) scale(1.08)`;
+      }
+    });
+
+    // The first button fills black while the last word holds
+    flashBtn.classList.toggle('is-flash', idx === N - 1 && local > ENTER && local < SLOT - LEAVE);
+  }
+
+  // Redraw every frame while the hero is on screen
+  let raf = 0;
+  let onScreen = true;
+  let userPaused = false;
+  const loop = () => {
+    render(Number(clock.currentTime ?? 0));
+    raf = requestAnimationFrame(loop);
+  };
+  const startLoop = () => {
+    if (!raf) raf = requestAnimationFrame(loop);
+  };
+  const stopLoop = () => {
+    cancelAnimationFrame(raf);
+    raf = 0;
+  };
+
+  const update = () => {
+    hero.classList.toggle('is-paused', userPaused);
+    if (reduce.matches) {
+      clock.pause();
+      stopLoop();
+      render(ENTER + 200); // still "Speak up" state
+      flashBtn.classList.remove('is-flash');
+      pauseBtn.hidden = true;
+      return;
+    }
+    pauseBtn.hidden = false;
+    const visible = onScreen && document.visibilityState === 'visible';
+    if (visible && !userPaused) clock.play();
+    else clock.pause(); // hidden tab or off screen: the clock stops
+    if (visible) startLoop();
+    else stopLoop();
+  };
+
+  pauseBtn.addEventListener('click', () => {
+    userPaused = !userPaused;
+    pauseBtn.setAttribute('aria-pressed', String(userPaused));
+    pauseLabel.textContent = userPaused ? 'Play animation' : 'Pause animation';
+    update();
+  });
+  document.addEventListener('visibilitychange', update);
+  reduce.addEventListener('change', update);
+  new IntersectionObserver(([e]) => {
+    onScreen = e.isIntersecting;
+    update();
+  }).observe(hero);
+  update();
+</script>

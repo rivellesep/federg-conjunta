@@ -1,0 +1,76 @@
+---
+import '@fontsource-variable/plus-jakarta-sans/wght.css';
+import '../styles/global.css';
+import fontLatin from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Exclude the page from the Pagefind search index */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Practice project, not the official FEDERG website. A student redesign of the site of the federation of European associations of patients affected by rare and/or genetic kidney diseases.',
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} · FEDERG` : 'FEDERG · Rare and genetic kidney diseases in Europe';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <!-- Practice project: never indexed. public/_headers sends the same rule as X-Robots-Tag -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#1f1f3f" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={fontLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1" data-pagefind-body={noindex ? undefined : ''}>
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Scroll reveal: adds .is-in when an element enters the viewport
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-in');
+                io.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.12 }
+        );
+        items.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

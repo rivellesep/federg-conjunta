@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+---
+
+<Base title="Page not found" noindex>
+  <PageHeader eyebrow="Error 404" title="This page could not be found" intro="It may have moved, or the link may be wrong.">
+    <p class="actions">
+      <a class="btn btn--primary" href="/">Go to the homepage</a>
+      <a class="btn btn--light" href="/search/">Search the site</a>
+    </p>
+  </PageHeader>
+</Base>
+
+<style>
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

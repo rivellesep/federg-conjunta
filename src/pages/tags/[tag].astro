@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import EventList from '../../components/EventList.astro';
+import { getAllTags, getNews, slugify } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const tags = await getAllTags();
+  return [...tags].map(([tag, label]) => ({ params: { tag }, props: { label } }));
+}
+
+const { tag } = Astro.params;
+const { label } = Astro.props;
+const has = (tags: string[]) => tags.some((t) => slugify(t) === tag);
+const news = (await getNews()).filter((p) => has(p.data.tags));
+const events = (await getCollection('events', (e) => has(e.data.tags))).sort((a, b) => +b.data.start - +a.data.start);
+---
+
+<Base title={`Tag: ${label}`} description={`News and events tagged ${label}.`} noindex>
+  <PageHeader eyebrow="Tag" title={label} intro={`${news.length + events.length} items tagged “${label}”.`} crumbs={[{ label: 'News', href: '/news/' }]} />
+  {
+    news.length > 0 && (
+      <section class="section section--white" aria-labelledby="tn">
+        <div class="container">
+          <h2 id="tn" class="t">News</h2>
+          <div class="grid grid--3">{news.map((p, i) => <NewsCard post={p} i={i % 3} />)}</div>
+        </div>
+      </section>
+    )
+  }
+  {
+    events.length > 0 && (
+      <section class="section" aria-labelledby="te">
+        <div class="container">
+          <h2 id="te" class="t">Events</h2>
+          <EventList events={events} />
+        </div>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .t {
+    margin-bottom: 2rem;
+    font-size: var(--step-2);
+  }
+</style>

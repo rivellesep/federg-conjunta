@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({ params: { slug: page.id }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const { Content } = await render(page);
+const crumbs = [{ label: 'About', href: '/about/' }];
+if (page.id.startsWith('collaborations/')) crumbs.push({ label: 'Collaborations', href: '/about/collaborations/' });
+---
+
+<Base title={page.data.title} description={page.data.intro}>
+  <PageHeader eyebrow={page.data.eyebrow} title={page.data.title} intro={page.data.intro} crumbs={crumbs} />
+  <section class="section section--white">
+    <div class="container--narrow prose" data-reveal>
+      <Content />
+    </div>
+  </section>
+</Base>

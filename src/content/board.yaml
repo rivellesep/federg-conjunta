@@ -1,0 +1,21 @@
+# Sample profiles only. This practice project does not publish real people's data.
+- id: president
+  name: Sample Name
+  role: President
+  bio: Sample profile for this practice project, no real personal data is published.
+- id: vice-president
+  name: Sample Name
+  role: Vice-President
+  bio: Sample profile for this practice project, no real personal data is published.
+- id: secretary
+  name: Sample Name
+  role: Secretary
+  bio: Sample profile for this practice project, no real personal data is published.
+- id: treasurer
+  name: Sample Name
+  role: Treasurer
+  bio: Sample profile for this practice project, no real personal data is published.
+- id: board-member
+  name: Sample Name
+  role: Board member
+  bio: Sample profile for this practice project, no real personal data is published.

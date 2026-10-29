@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+export async function getStaticPaths() {
+  const stories = await getCollection('stories');
+  return stories.map((story) => ({ params: { slug: story.id }, props: { story } }));
+}
+
+const { story } = Astro.props;
+const { Content } = await render(story);
+---
+
+<Base title={story.data.title} description={story.data.summary}>
+  <PageHeader
+    eyebrow={`${story.data.condition} · ${story.data.country}`}
+    title={story.data.title}
+    intro={story.data.summary}
+    crumbs={[{ label: 'Patient stories', href: '/patient-stories/' }]}
+  />
+  <article class="section section--white">
+    <div class="container--narrow">
+      <p class="fiction-note" data-reveal>
+        <strong>Fictional story.</strong> Written for this practice project. It does not describe a real person or real patient data.
+      </p>
+      <blockquote class="pull" data-reveal><p>{story.data.quote}</p></blockquote>
+      <div class="prose" data-reveal><Content /></div>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .pull {
+    margin: 0 0 3rem;
+    font-size: var(--step-3);
+    font-weight: 480;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  .pull p::before {
+    content: '“';
+    color: var(--orange);
+  }
+
+  .pull p::after {
+    content: '”';
+    color: var(--orange);
+  }
+</style>

@@ -1,0 +1,18 @@
+# OAuth proxy that lets editors sign in to the CMS (/admin/) with their GitHub account.
+# Unmodified copy of sveltia-cms-auth (MIT, see LICENSE.txt), commit 33500e1 from 2026-10-26:
+# https://github.com/sveltia/sveltia-cms-auth
+#
+# Deploy from the project root:  npm run cms-auth:deploy
+# The worker URL will be https://federg-cms-auth.<your-subdomain>.workers.dev
+name = "federg-cms-auth"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+# GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are added in the Cloudflare dashboard as secrets
+# (Settings > Variables and Secrets > Type: Secret). They never go in this file or in the repo.
+# keep_vars stops a deploy from removing variables that were set in the dashboard.
+keep_vars = true
+
+[vars]
+# Only the published site and its preview deployments may receive a token
+ALLOWED_DOMAINS = "federg-conjunta.pages.dev, *.federg-conjunta.pages.dev"

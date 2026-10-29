@@ -1,0 +1,147 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+const stories = (await getCollection('stories')).sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<Base title="Patient stories" description="Stories of people living with rare and genetic kidney diseases.">
+  <PageHeader
+    eyebrow="Patient stories"
+    title="Behind every diagnosis, a life"
+    intro="Stories of people living with rare and genetic kidney diseases."
+    crumbs={[{ label: 'Patient stories', href: '/patient-stories/' }]}
+  />
+  <section class="section">
+    <div class="container">
+      <p class="fiction-note" data-reveal>
+        <strong>All stories on this page are fictional.</strong> They were written for this practice project and do not
+        describe real people or contain real patient data.
+      </p>
+    </div>
+    <div class="container stories">
+      {
+        stories.map((s, i) => (
+          <article class="story-card" data-reveal style={`--i:${i % 2}`}>
+            <div class="story-card__art">
+              <span aria-hidden="true">{s.data.person[0]}</span>
+              <span class="fiction-badge">Fictional story</span>
+            </div>
+            <div class="story-card__body">
+              <p class="card__meta">
+                {s.data.condition} · {s.data.country}
+              </p>
+              <h2>
+                <a class="story-card__link" href={`/patient-stories/${s.id}/`}>{s.data.title}</a>
+              </h2>
+              <blockquote>
+                <p>{s.data.quote}</p>
+              </blockquote>
+              <p class="story-card__summary">{s.data.summary}</p>
+              <p class="arrow-link">Read {s.data.person}’s story <span aria-hidden="true">→</span></p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .stories {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .story-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(12rem, 22rem) 1fr;
+    overflow: hidden;
+    border-radius: 28px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    transition:
+      transform 0.4s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
+  }
+
+  .story-card:has(.story-card__link:hover),
+  .story-card:has(.story-card__link:focus-visible) {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px -24px rgb(31 31 63 / 35%);
+  }
+
+  .story-card:has(.story-card__link:focus-visible) {
+    outline: 3px solid var(--orange);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 720px) {
+    .story-card {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .story-card__art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 14rem;
+    background:
+      radial-gradient(circle at 30% 30%, rgb(255 100 0 / 85%), transparent 55%),
+      radial-gradient(circle at 80% 90%, rgb(35 62 144 / 95%), transparent 60%), var(--navy);
+  }
+
+  .story-card__art .fiction-badge {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+  }
+
+  .story-card__art span[aria-hidden] {
+    font-size: 7rem;
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    color: rgb(255 255 255 / 90%);
+  }
+
+  .story-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+
+  .story-card h2 {
+    font-size: var(--step-2);
+  }
+
+  .story-card blockquote {
+    margin: 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--orange);
+    font-size: var(--step-1);
+    color: var(--ink);
+  }
+
+  .story-card__summary {
+    color: var(--ink-soft);
+  }
+
+  .story-card__link {
+    text-decoration: none;
+  }
+
+  .story-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .story-card__link:focus-visible {
+    outline: none;
+  }
+</style>

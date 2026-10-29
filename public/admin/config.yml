@@ -1,0 +1,231 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms@0.253.2/schema/sveltia-cms.json
+#
+# Sveltia CMS configuration for the FEDERG practice site.
+# Every collection mirrors a schema in src/content.config.ts. If you add, rename or remove
+# a field there, do the same here, or the CMS will save files that break the build.
+# Labels and hints are in Spanish for the editor. The site content itself stays in English.
+
+app_title: FEDERG CMS (proyecto de prácticas)
+logo:
+  src: /favicon.svg
+
+backend:
+  name: github
+  repo: rivellesep/federg-conjunta
+  branch: main
+  # OAuth proxy on Cloudflare Workers, see cms-auth/. Replace SUBDOMAIN with the account's
+  # workers.dev subdomain once the worker is deployed.
+  base_url: https://federg-cms-auth.SUBDOMAIN.workers.dev
+  # The repository is public, so the token only needs public_repo, not access to private repos
+  auth_scope: public_repo
+  # One commit on main per published draft, instead of a merge commit
+  squash_merges: true
+  # Editors sign in with GitHub through the OAuth proxy. Personal access tokens are not offered.
+  auth_methods: [oauth]
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
+
+# Drafts become pull requests. Cloudflare Pages builds each one and the CMS links to that preview.
+publish_mode: editorial_workflow
+
+site_url: https://federg-conjunta.pages.dev
+
+# Fallback for files uploaded from the asset library outside any collection.
+# Collections with images set their own folder inside src/assets, so Astro optimises them.
+media_folder: /public/uploads
+public_folder: /uploads
+
+media_libraries:
+  default:
+    config:
+      max_file_size: 5000000 # 5 MB
+      slugify_filename: true
+      # Resized and converted on upload, before the file reaches the repository
+      transformations:
+        raster_image:
+          format: webp
+          quality: 85
+          width: 2000
+          height: 2000
+  # No stock photo sites: they would make it easy to publish photos of real people
+  stock_assets:
+    providers: []
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+output:
+  # Zod's .optional() rejects empty strings, so empty optional fields are left out of the file
+  omit_empty_optional_fields: true
+
+collections:
+  - name: news
+    label: Noticias
+    label_singular: Noticia
+    icon: newspaper
+    description: Cada noticia necesita una imagen destacada y su descripción. Escribe el contenido en inglés.
+    folder: src/content/news
+    # Featured image and images in the text go to src/assets/news/. The path written in the file is
+    # relative to the post, which is what Astro's image() and Markdown images expect.
+    media_folder: /src/assets/news
+    public_folder: ../../assets/news
+    create: true
+    slug: '{{title}}'
+    summary: "{{title}} ({{date | date('YYYY-MM-DD')}})"
+    sortable_fields: [date, title]
+    preview_path: news/{{slug}}/
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: date, label: Fecha, widget: datetime, type: date, default: '{{now}}' }
+      - name: summary
+        label: Resumen
+        widget: text
+        hint: Una o dos frases. Sale en las tarjetas de noticias y en el buscador.
+      - name: image
+        label: Imagen destacada
+        widget: image
+        accept: image/jpeg,image/png,image/webp
+        hint: JPG, PNG o WebP, mejor en horizontal (16:9). No subas fotos de pacientes reales.
+      - name: imageAlt
+        label: Descripción de la imagen (texto alternativo)
+        widget: string
+        hint: 'Explica qué se ve, para quien no puede ver la imagen. Ejemplo: "Riñón naranja junto a un círculo de estrellas amarillas".'
+      - name: tags
+        label: Etiquetas
+        widget: list
+        required: false
+        hint: Pulsa Intro después de cada etiqueta.
+      - name: draft
+        label: Ocultar en la web
+        widget: boolean
+        default: false
+        required: false
+        hint: La noticia no aparece en la web aunque esté publicada.
+      - { name: body, label: Texto, widget: markdown }
+
+  - name: events
+    label: Eventos
+    label_singular: Evento
+    icon: event
+    description: Congresos, días mundiales y reuniones. Los eventos pasados bajan solos con la reconstrucción diaria.
+    folder: src/content/events
+    media_folder: /src/assets/events
+    public_folder: ../../assets/events
+    create: true
+    slug: '{{title}}'
+    summary: "{{title}} ({{start | date('YYYY-MM-DD')}})"
+    sortable_fields: [start, title]
+    preview_path: events/{{slug}}/
+    preview_path_date_field: start
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: start, label: Fecha de inicio, widget: datetime, type: date }
+      - name: end
+        label: Fecha de fin
+        widget: datetime
+        type: date
+        required: false
+        hint: Déjala vacía si el evento dura un solo día.
+      - name: format
+        label: Formato
+        widget: select
+        options:
+          - { label: Presencial, value: In person }
+          - { label: En línea, value: Online }
+          - { label: Híbrido, value: Hybrid }
+        default: In person
+      - { name: location, label: Lugar, widget: string, hint: 'Ciudad, u "Online".' }
+      - { name: organiser, label: Organiza, widget: string, required: false }
+      - { name: summary, label: Resumen, widget: text }
+      - name: url
+        label: Web del evento
+        widget: string
+        required: false
+        pattern: ['^https?://\S+$', 'Pega la dirección completa, empezando por https://']
+      - { name: tags, label: Etiquetas, widget: list, required: false }
+      - { name: body, label: Texto, widget: markdown, required: false }
+
+  - name: stories
+    label: Historias de pacientes
+    label_singular: Historia
+    icon: favorite
+    description: >-
+      Solo historias inventadas. Este proyecto de prácticas nunca publica pacientes reales ni datos de salud reales.
+    folder: src/content/stories
+    media_folder: /src/assets/stories
+    public_folder: ../../assets/stories
+    create: true
+    slug: '{{title}}'
+    summary: '{{title}} ({{person}})'
+    sortable_fields: [date, title]
+    preview_path: patient-stories/{{slug}}/
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: person, label: Nombre inventado, widget: string }
+      - { name: condition, label: Enfermedad, widget: string }
+      - { name: country, label: País, widget: string }
+      - { name: quote, label: Cita, widget: text }
+      - { name: summary, label: Resumen, widget: text }
+      - { name: date, label: Fecha, widget: datetime, type: date, default: '{{now}}' }
+      # Required by the schema: the site labels every story as fictional
+      - { name: fictional, widget: hidden, default: true }
+      - name: body
+        label: Historia
+        widget: markdown
+        default: '*This is a fictional story written for a practice project. It does not describe a real person.*'
+
+  - name: members
+    label: Miembros
+    label_singular: Asociación miembro
+    icon: groups
+    description: Asociaciones miembro. Solo datos públicos de la organización (nombre, país, web).
+    folder: src/content/members
+    format: yaml
+    extension: yaml
+    create: true
+    identifier_field: name
+    slug: '{{name}}'
+    summary: '{{name}} ({{country}})'
+    sortable_fields: [name, country]
+    view_groups:
+      - { label: País, field: country }
+    fields:
+      - { name: name, label: Nombre, widget: string }
+      - name: country
+        label: País (en inglés)
+        widget: string
+        hint: 'Por ejemplo "Spain". Usa "Europe" o "International" para redes que no son de un solo país.'
+      - { name: focus, label: Enfermedad o ámbito, widget: string }
+      - name: url
+        label: Web
+        widget: string
+        pattern: ['^https?://\S+$', 'Pega la dirección completa, empezando por https://']
+
+  - name: pages
+    label: Páginas
+    label_singular: Página
+    icon: description
+    description: Las páginas de About FEDERG. Para añadir una página nueva al menú, avisa a quien mantiene la web.
+    folder: src/content/pages
+    nested: { depth: 2 }
+    create: false
+    delete: false
+    duplicate: false
+    sortable_fields: [order, title]
+    preview_path: about/{{slug}}/
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: eyebrow, label: Etiqueta sobre el título, widget: string, default: About FEDERG, required: false }
+      - { name: intro, label: Introducción, widget: text }
+      - { name: order, label: Orden en los listados, widget: number, value_type: int, default: 99, required: false }
+      # Text only: pages sit at different folder depths, so relative image paths would differ
+      - name: body
+        label: Texto
+        widget: markdown
+        buttons: [bold, italic, link, bulleted-list, numbered-list, heading-two, heading-three, quote]
+        editor_components: []

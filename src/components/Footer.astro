@@ -1,0 +1,187 @@
+---
+import { nav, social } from '../data/nav';
+
+const about = nav[0].children ?? [];
+const newsEvents = nav[2].children ?? [];
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="practice-notice" role="note">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"></circle>
+        <path d="M12 7v6M12 16.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      </svg>
+      <p>
+        <strong>Practice project.</strong> This is a student redesign exercise and <strong>not the official FEDERG website</strong>.
+        Content is for demonstration only and may be inaccurate. The official site is{' '}
+        <a href="https://federg.org/" rel="noopener">federg.org</a>.
+      </p>
+    </div>
+
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a class="logo-chip" href="/" aria-label="FEDERG home">
+          <img src="/logo/federg_logo.svg" alt="FEDERG" width="140" height="28" loading="lazy" />
+        </a>
+        <p>
+          The federation of European associations of patients affected by rare and/or genetic kidney diseases.
+        </p>
+      </div>
+
+      <nav aria-label="About FEDERG">
+        <h2>About</h2>
+        <ul>{about.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+      </nav>
+
+      <nav aria-label="News and events">
+        <h2>News &amp; Events</h2>
+        <ul>
+          {newsEvents.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          <li><a href="/patient-stories/">Patient stories</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <h2>Follow</h2>
+        <ul>
+          {
+            social.map((s) => (
+              <li>
+                <a href={s.href} rel="noopener" target="_blank">
+                  {s.label}
+                  <span class="visually-hidden"> (opens in a new tab)</span>
+                </a>
+              </li>
+            ))
+          }
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} Practice redesign of the FEDERG website. Logo © FEDERG.</p>
+      <a href="#top" class="to-top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3rem, 2rem + 4vw, 5rem) 2rem;
+    border-top: 4px solid var(--orange);
+    background: var(--navy);
+    color: var(--on-navy-soft);
+    font-size: var(--step--1);
+  }
+
+  .practice-notice {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    padding: 1.1rem 1.25rem;
+    margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+    border: 1px solid rgb(255 205 5 / 45%);
+    border-radius: var(--radius);
+    background: rgb(255 205 5 / 8%);
+    color: #fff;
+    line-height: 1.55;
+  }
+
+  .practice-notice svg {
+    flex-shrink: 0;
+    color: var(--eu-yellow);
+    margin-top: 1px;
+  }
+
+  .site-footer .practice-notice a {
+    color: var(--eu-yellow);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  /* Brand on its own row, then the three link columns side by side */
+  @media (max-width: 1023px) {
+    .site-footer__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .site-footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 559px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .site-footer__brand p {
+    max-width: 30ch;
+    margin-top: 1.25rem;
+  }
+
+  .logo-chip {
+    display: inline-block;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  .logo-chip img {
+    width: 140px;
+    height: auto;
+  }
+
+  .site-footer h2 {
+    margin-bottom: 1rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .site-footer ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer li + li {
+    margin-top: 0.55rem;
+  }
+
+  .site-footer a {
+    color: var(--on-navy-soft);
+    text-decoration: none;
+  }
+
+  .site-footer a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(255 255 255 / 12%);
+  }
+</style>

@@ -1,0 +1,113 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { fmtDate } from '../lib/content';
+
+interface Props {
+  item: CollectionEntry<'newsletters'>;
+  i?: number;
+}
+const { item, i = 0 } = Astro.props;
+const { title, issue, date, summary, pdf, type } = item.data;
+---
+
+<article class="card letter" data-reveal style={`--i:${i}`}>
+  <div class:list={['letter__cover', `letter__cover--${type}`]} aria-hidden="true">
+    <span class="letter__brand">FEDERG</span>
+    <span class="letter__title">{title}</span>
+    <span class="letter__issue">{issue}</span>
+  </div>
+  <div class="letter__body">
+    <p class="card__meta"><time datetime={date.toISOString().slice(0, 10)}>{fmtDate(date, { month: 'long', year: 'numeric' })}</time></p>
+    <h3>
+      <a class="card__link" href={pdf} rel="noopener" target="_blank">
+        {title}: {issue}<span class="visually-hidden"> (PDF on federg.org, opens in a new tab)</span>
+      </a>
+    </h3>
+    <p>{summary}</p>
+    <p class="card__foot arrow-link">Open PDF <span aria-hidden="true">↗</span></p>
+  </div>
+</article>
+
+<style>
+  .letter {
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  /* Cover on top on small phones and on tablets, where two cards share a narrow row */
+  @media (max-width: 520px), (min-width: 640px) and (max-width: 1023px) {
+    .letter {
+      flex-direction: column;
+    }
+  }
+
+  .letter__cover {
+    position: relative;
+    flex: 0 0 9.5rem;
+    aspect-ratio: 1 / 1.414;
+    display: flex;
+    flex-direction: column;
+    padding: 0.9rem;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--navy);
+    color: #fff;
+    box-shadow: 0 16px 30px -18px rgb(31 31 63 / 60%);
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .letter:has(.card__link:hover) .letter__cover {
+    transform: rotate(-2deg) scale(1.03);
+  }
+
+  .letter__cover::after {
+    content: '';
+    position: absolute;
+    right: -30%;
+    bottom: -18%;
+    width: 90%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 10px solid var(--orange);
+  }
+
+  .letter__cover--representations {
+    background: var(--eu-blue);
+  }
+
+  .letter__cover--representations::after {
+    border-color: var(--eu-yellow);
+  }
+
+  .letter__brand {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--orange);
+  }
+
+  .letter__cover--representations .letter__brand {
+    color: var(--eu-yellow);
+  }
+
+  .letter__title {
+    margin-top: 0.8rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .letter__issue {
+    margin-top: 0.4rem;
+    font-size: 0.65rem;
+    opacity: 0.8;
+  }
+
+  .letter__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHeader from './PageHeader.astro';
+import NewsletterCard from './NewsletterCard.astro';
+
+interface Props {
+  type: 'representations' | 'members-activities';
+  title: string;
+  intro: string;
+  href: string;
+}
+const { type, title, intro, href } = Astro.props;
+const items = (await getCollection('newsletters', (n) => n.data.type === type)).sort((a, b) => +b.data.date - +a.data.date);
+---
+
+<Base title={title} description={intro}>
+  <PageHeader eyebrow="News & Events" title={title} intro={intro} crumbs={[{ label: title, href }]} />
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--2">
+        {items.map((n, i) => <NewsletterCard item={n} i={i} />)}
+      </div>
+    </div>
+  </section>
+</Base>

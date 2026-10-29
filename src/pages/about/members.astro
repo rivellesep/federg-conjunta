@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+// "Europe" and "International" are networks, not countries: they go after the countries
+const networks = ['Europe', 'International'];
+const members = (await getCollection('members')).sort(
+  (a, b) =>
+    +networks.includes(a.data.country) - +networks.includes(b.data.country) ||
+    a.data.country.localeCompare(b.data.country) ||
+    a.data.name.localeCompare(b.data.name)
+);
+const roles = ['president', 'vice-president', 'secretary', 'treasurer', 'board-member'];
+const board = (await getCollection('board')).sort((a, b) => roles.indexOf(a.id) - roles.indexOf(b.id));
+const byCountry = Map.groupBy(members, (m) => m.data.country);
+const initials = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter((w) => /^[A-Za-zÀ-ÿ]/.test(w) && w.length > 2)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join('');
+---
+
+<Base title="Our members" description="The national patient associations that make up FEDERG.">
+  <PageHeader
+    eyebrow="About FEDERG"
+    title="Our members"
+    intro={`${members.length} patient associations across Europe, each one an expert in its own disease and country.`}
+    crumbs={[{ label: 'About', href: '/about/' }]}
+  />
+
+  <section class="section section--white" aria-labelledby="assoc-title">
+    <div class="container">
+      <h2 id="assoc-title" class="visually-hidden">Member associations</h2>
+      {
+        [...byCountry].map(([country, list]) => (
+          <div class="country" data-reveal>
+            <h3 class="country__name">{country}</h3>
+            <ul class="members" role="list">
+              {list.map((m) => (
+                <li class="member">
+                  <span class="member__mono" aria-hidden="true">{initials(m.data.name)}</span>
+                  <span>
+                    <a class="member__name" href={m.data.url} rel="noopener" target="_blank">
+                      {m.data.name}
+                      <span class="visually-hidden"> (opens in a new tab)</span>
+                    </a>
+                    <span class="member__focus">{m.data.focus}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="board-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Governance</p>
+          <h2 id="board-title">The Board</h2>
+        </div>
+        <p class="lead board-note">Sample profiles. This practice project does not publish real people's data.</p>
+      </div>
+      <ul class="grid grid--3" role="list">
+        {
+          board.map((b, i) => (
+            <li class="card" data-reveal style={`--i:${i % 3}`}>
+              <span class="avatar" aria-hidden="true" />
+              <h3>{b.data.role}</h3>
+              <p class="card__meta">{b.data.name}</p>
+              <p>{b.data.bio}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .country {
+    display: grid;
+    grid-template-columns: 14rem 1fr;
+    gap: 1rem 2rem;
+    padding-block: 2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (max-width: 760px) {
+    .country {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .country__name {
+    font-size: var(--step-1);
+    color: var(--ink);
+  }
+
+  /* A flowing list in columns, so no association sits alone in a row of cards */
+  .members {
+    columns: 2 18rem;
+    column-gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .member {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 0.9rem;
+    align-items: center;
+  }
+
+  .member__mono {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 12px;
+    background: #fff1e8;
+    color: #8f3600;
+    font-weight: 650;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+  }
+
+  .member__name {
+    display: block;
+    font-weight: 560;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .member__name:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .member__focus {
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+
+  .board-note {
+    max-width: 28rem;
+    font-size: var(--step-0);
+  }
+
+  .avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 38%, #fff 0 18%, transparent 19%),
+      radial-gradient(circle at 50% 110%, #fff 0 38%, transparent 39%), linear-gradient(135deg, var(--eu-blue), var(--navy));
+  }
+</style>

@@ -1,0 +1,542 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Stars from '../components/Stars.astro';
+import EventList from '../components/EventList.astro';
+import NewsCard from '../components/NewsCard.astro';
+import NewsletterCard from '../components/NewsletterCard.astro';
+import { getEvents, getNews } from '../lib/content';
+
+const { upcoming } = await getEvents();
+const news = (await getNews()).slice(0, 3);
+const newsletters = (await getCollection('newsletters')).sort((a, b) => +b.data.date - +a.data.date);
+const [story] = (await getCollection('stories')).sort((a, b) => +b.data.date - +a.data.date);
+
+// Members grouped by country, biggest groups first
+const members = await getCollection('members');
+// "Europe" and "International" are networks, not countries: they go last and are not counted
+const networks = ['Europe', 'International'];
+const byCountry = [...Map.groupBy(members, (m) => m.data.country)]
+  .map(([country, list]) => ({ country, names: list.map((m) => m.data.name).sort() }))
+  .sort(
+    (a, b) =>
+      +networks.includes(a.country) - +networks.includes(b.country) ||
+      b.names.length - a.names.length ||
+      a.country.localeCompare(b.country)
+  );
+const countryCount = byCountry.filter((c) => !networks.includes(c.country)).length;
+
+const pillars = [
+  {
+    title: 'Advocacy',
+    text: 'Equal access to high-quality, multidisciplinary care, with social and psychological support.',
+    icon: 'M12 3 4 7v5c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V7l-8-4Z',
+  },
+  {
+    title: 'Representation',
+    text: 'The patient voice in EU health policy, reference networks and European conferences.',
+    icon: 'M4 21V9l8-6 8 6v12M9 21v-6h6v6',
+  },
+  {
+    title: 'Engagement',
+    text: 'Patients who take part in registries, studies and trials, and help shape research.',
+    icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 9a7 7 0 0 1 14 0',
+  },
+  {
+    title: 'Collaboration',
+    text: 'Working with ERKNet, EKHA, EURORDIS and others to achieve more than alone.',
+    icon: 'M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8 8a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM11 9l2 4',
+  },
+];
+---
+
+<Base>
+  <Hero />
+
+  <!-- Mission -->
+  <section class="section mission" aria-labelledby="mission-title">
+    <div class="container">
+      <p class="eyebrow" data-reveal>Our mission</p>
+      <h2 id="mission-title" class="mission__text" data-reveal>
+        To improve the health and quality of life of people affected by <mark>rare and genetic kidney diseases</mark>,
+        through advocacy, representation, engagement and collaboration.
+      </h2>
+
+      <ul class="pillars" role="list">
+        {
+          pillars.map((p, i) => (
+            <li class="pillar" data-reveal style={`--i:${i}`}>
+              <span class="pillar__num">0{i + 1}</span>
+              <span class="pillar__icon">
+                <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={p.icon} fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" />
+                </svg>
+              </span>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div data-reveal>
+        <a class="arrow-link" href="/about/what-we-do/">Discover what we do <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Members by country -->
+  <section class="members-band" aria-labelledby="members-title">
+    <Stars size="clamp(380px, 52vw, 760px)" x="94%" y="18%" opacity={0.28} />
+    <div class="container members-band__inner">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow eyebrow--on-navy" data-reveal>Member associations</p>
+          <h2 id="members-title" data-reveal>Patient associations from across Europe, working as one</h2>
+        </div>
+        <p class="members-band__count" data-reveal>
+          <strong>{members.length}</strong> associations <span aria-hidden="true">·</span> <strong>{countryCount}</strong> countries
+        </p>
+      </div>
+      <ul class="countries" role="list">
+        {
+          byCountry.map((c) => (
+            <li class="country">
+              <h3 class="country__name">{c.country}</h3>
+              <ul role="list">
+                {c.names.map((n) => (
+                  <li>{n}</li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+      <div data-reveal>
+        <a class="btn btn--primary" href="/about/members/">Meet all our members</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming events -->
+  <section class="section section--white" aria-labelledby="events-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>Agenda</p>
+          <h2 id="events-title" data-reveal>Upcoming events</h2>
+        </div>
+        <a class="btn btn--ghost" href="/events/" data-reveal>All events</a>
+      </div>
+      {
+        upcoming.length > 0 ? (
+          <EventList events={upcoming.slice(0, 3)} />
+        ) : (
+          <p class="lead">No upcoming events right now. Check back soon.</p>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- News -->
+  <section class="section" aria-labelledby="news-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>Latest</p>
+          <h2 id="news-title" data-reveal>News</h2>
+        </div>
+        <a class="btn btn--ghost" href="/news/" data-reveal>All news</a>
+      </div>
+      <div class="grid grid--3">
+        {news.map((p, i) => <NewsCard post={p} i={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured patient story (fictional) -->
+  {
+    story && (
+      <section class="section section--white" aria-labelledby="story-title">
+        <div class="container story">
+          <div class="story__visual" data-reveal aria-hidden="true">
+            <Stars size="120%" x="50%" y="50%" opacity={0.35} spin={false} />
+            <span class="story__initial">{story.data.person.charAt(0)}</span>
+          </div>
+          <div class="story__text" data-reveal style="--i:1">
+            <p class="eyebrow">Patient stories</p>
+            <span class="fiction-badge">Fictional story</span>
+            <h2 class="visually-hidden" id="story-title">Featured patient story</h2>
+            <blockquote class="story__quote">
+              <p>{story.data.quote}</p>
+            </blockquote>
+            <p class="story__who">
+              <strong>{story.data.person}</strong> · {story.data.condition} · {story.data.country}
+            </p>
+            <p class="story__disclaimer">An invented person. This practice project publishes no real patient data.</p>
+            <div class="story__links">
+              <a class="btn btn--primary" href={`/patient-stories/${story.id}/`}>
+                Read {story.data.person}’s story
+              </a>
+              <a class="arrow-link" href="/patient-stories/">All patient stories <span aria-hidden="true">→</span></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Newsletters -->
+  <section class="section" aria-labelledby="letters-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-reveal>Newsletters</p>
+          <h2 id="letters-title" data-reveal>Members activities &amp; FEDERG representations</h2>
+        </div>
+      </div>
+      <div class="grid grid--2">
+        {newsletters.map((n, i) => <NewsletterCard item={n} i={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Join -->
+  <section class="section section--flush-top" aria-labelledby="join-title">
+    <div class="container">
+      <div class="join" data-reveal>
+        <div>
+          <h2 id="join-title">Is your association working on a rare kidney disease?</h2>
+          <p>
+            FEDERG welcomes national organisations and informal patient groups from across Europe. Together, we are heard.
+          </p>
+        </div>
+        <div class="join__actions">
+          <a class="btn btn--dark" href="/contact/">Get in touch</a>
+          <a class="btn btn--outline-dark" href="/about/members/">Meet our members</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .mission__text {
+    max-width: 30ch;
+    font-size: var(--step-3);
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  .mission__text mark {
+    background: linear-gradient(transparent 62%, rgb(255 100 0 / 35%) 62%);
+    color: inherit;
+  }
+
+  /* Four pillars: 1, 2 or 4 per row, never 3 + 1 */
+  .pillars {
+    display: grid;
+    gap: 1rem;
+    margin: clamp(3rem, 2rem + 4vw, 5rem) 0 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .pillars {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .pillars {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .pillar {
+    position: relative;
+    padding: 1.75rem 1.6rem 2rem;
+    border-radius: var(--radius-lg);
+    border-top: 4px solid var(--orange);
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  .pillar__num {
+    position: absolute;
+    top: 1.6rem;
+    right: 1.6rem;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pillar__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-bottom: 2.5rem;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--orange);
+  }
+
+  .pillar h3 {
+    margin-bottom: 0.6rem;
+    font-size: var(--step-1);
+  }
+
+  .pillar p {
+    color: var(--ink-soft);
+  }
+
+  /* Members band */
+
+  .members-band {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: var(--section);
+    background:
+      radial-gradient(70% 90% at 0% 100%, rgb(35 62 144 / 90%), transparent 70%),
+      var(--navy);
+    color: var(--on-navy);
+  }
+
+  .members-band__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .members-band h2 {
+    font-size: var(--step-3);
+    max-width: 20ch;
+  }
+
+  .eyebrow--on-navy {
+    color: var(--orange);
+  }
+
+  .members-band__count {
+    color: var(--on-navy-soft);
+  }
+
+  .members-band__count strong {
+    font-size: var(--step-2);
+    color: var(--on-navy);
+  }
+
+  /* Country groups flow in columns, so there is no row to leave half empty */
+  .countries {
+    columns: 1;
+    column-gap: 1rem;
+    margin: 0 0 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .countries {
+      columns: 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .countries {
+      columns: 3;
+    }
+  }
+
+  .country {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    padding: 1.2rem 1.4rem;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 6%);
+  }
+
+  .country__name {
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .country ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .country li {
+    font-weight: 550;
+  }
+
+  .country li + li {
+    margin-top: 0.3rem;
+  }
+
+  /* Featured story */
+
+  .story {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+    align-items: center;
+  }
+
+  @media (min-width: 700px) {
+    .story {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    }
+  }
+
+  .story__visual {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3.4;
+    border-radius: 26px;
+    background:
+      radial-gradient(60% 60% at 80% 90%, rgb(255 100 0 / 50%), transparent 70%),
+      linear-gradient(160deg, var(--eu-blue), var(--navy));
+  }
+
+  .story__initial {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: clamp(110px, 14vw, 170px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--navy);
+    font-size: clamp(3rem, 6vw, 4.6rem);
+    font-weight: 700;
+    box-shadow:
+      inset 0 -8px 0 var(--orange),
+      0 20px 50px rgb(0 0 0 / 30%);
+  }
+
+  .story__text .fiction-badge {
+    display: table;
+    margin-bottom: 1.25rem;
+  }
+
+  .story__quote {
+    margin: 0;
+  }
+
+  .story__quote p {
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .story__quote p::before {
+    content: '“';
+  }
+
+  .story__quote p::after {
+    content: '”';
+  }
+
+  .story__who {
+    margin-top: 1.4rem;
+    color: var(--ink-soft);
+  }
+
+  .story__who strong {
+    color: var(--ink);
+  }
+
+  .story__disclaimer {
+    margin-top: 0.35rem;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+
+  .story__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin-top: 2rem;
+  }
+
+  /* Join: navy text on orange, 5.3:1 */
+
+  .section--flush-top {
+    padding-top: 0;
+  }
+
+  .join {
+    display: grid;
+    align-items: end;
+    gap: 2rem 4rem;
+    padding: clamp(2rem, 1.5rem + 3vw, 4rem);
+    border-radius: 28px;
+    background: var(--orange);
+    color: var(--navy);
+  }
+
+  @media (min-width: 900px) {
+    .join {
+      grid-template-columns: 1.4fr 1fr;
+    }
+  }
+
+  .join h2 {
+    margin-bottom: 1rem;
+    font-size: var(--step-3);
+  }
+
+  .join p {
+    max-width: 40rem;
+    font-size: var(--step-1);
+    line-height: 1.45;
+  }
+
+  .join__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 900px) {
+    .join__actions {
+      justify-content: flex-end;
+    }
+  }
+
+  .btn--dark {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .btn--dark:hover {
+    background: var(--white);
+    color: var(--navy);
+  }
+
+  .btn--outline-dark {
+    border: 1.4px solid var(--navy);
+    color: var(--navy);
+  }
+
+  .btn--outline-dark:hover {
+    background: var(--navy);
+    color: var(--white);
+  }
+</style>

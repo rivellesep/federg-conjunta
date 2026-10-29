@@ -1,0 +1,65 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { fmtDate, getNews, slugify } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const posts = await getNews();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const more = (await getNews()).filter((p) => p.id !== post.id).slice(0, 3);
+---
+
+<Base title={post.data.title} description={post.data.summary}>
+  <PageHeader eyebrow={fmtDate(post.data.date)} title={post.data.title} intro={post.data.summary} crumbs={[{ label: 'News', href: '/news/' }]}>
+    <ul class="tags header-tags" aria-label="Tags">
+      {post.data.tags.map((t) => <li><a class="tag" href={`/tags/${slugify(t)}/`}>{t}</a></li>)}
+    </ul>
+  </PageHeader>
+  <article class="section section--white">
+    <div class="container--narrow">
+      <Image
+        class="cover"
+        src={post.data.image}
+        alt={post.data.imageAlt}
+        widths={[480, 760, 1100, 1500]}
+        sizes="(min-width: 800px) 736px, 92vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="prose" data-reveal>
+        <Content />
+      </div>
+    </div>
+  </article>
+  <section class="section" aria-labelledby="more-title">
+    <div class="container">
+      <h2 id="more-title" class="more-title">More news</h2>
+      <div class="grid grid--3">{more.map((p, i) => <NewsCard post={p} i={i} />)}</div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .header-tags {
+    margin-top: 2rem;
+  }
+
+  .cover {
+    width: 100%;
+    height: auto;
+    margin-bottom: 2.5rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .more-title {
+    margin-bottom: 2rem;
+    font-size: var(--step-2);
+  }
+</style>

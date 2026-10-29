@@ -1,0 +1,7 @@
+# Cloudflare Pages project configuration.
+# The project is connected to GitHub (Git integration): every push to main publishes the site and
+# every other branch, including the CMS drafts, gets its own preview URL. No manual deploy needed.
+# With Git integration Cloudflare reads this file, so `name` must match the Pages project name.
+name = "federg-conjunta"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-10-01"

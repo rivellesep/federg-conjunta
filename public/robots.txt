@@ -1,0 +1,7 @@
+# Practice project. Pages stay crawlable so search engines can read the noindex rule
+# (meta robots and the X-Robots-Tag header). Blocking them here would hide that rule.
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Sitemap: https://federg-conjunta.pages.dev/sitemap-index.xml

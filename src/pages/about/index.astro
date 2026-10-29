@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+
+const pages = (await getCollection('pages')).sort((a, b) => a.data.order - b.data.order);
+const cards = [
+  ...pages.filter((p) => !p.id.includes('/')).map((p) => ({ href: `/about/${p.id}/`, title: p.data.title, text: p.data.intro, order: p.data.order })),
+  { href: '/about/members/', title: 'Our members', text: 'National patient associations from across Europe.', order: 2 },
+].sort((a, b) => a.order - b.order);
+---
+
+<Base title="About FEDERG" description="Who we are, what we do, our members and how FEDERG is governed.">
+  <PageHeader
+    eyebrow="About FEDERG"
+    title="A federation built by patients, for patients"
+    intro="FEDERG is the non-profit federation of European associations of patients affected by rare and/or genetic kidney diseases."
+    crumbs={[{ label: 'About', href: '/about/' }]}
+  />
+  <section class="section">
+    <div class="container">
+      <div class="grid grid--3">
+      {
+        cards.map((c, i) => (
+          <article class="card" data-reveal style={`--i:${i % 3}`}>
+            <h2 class="h3"><a class="card__link" href={c.href}>{c.title}</a></h2>
+            <p>{c.text}</p>
+            <p class="card__foot arrow-link">Read more <span aria-hidden="true">→</span></p>
+          </article>
+        ))
+      }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .h3 {
+    font-size: var(--step-1);
+    line-height: 1.25;
+  }
+</style>

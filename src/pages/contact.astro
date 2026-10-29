@@ -1,0 +1,186 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { social } from '../data/nav';
+---
+
+<Base title="Contact" description="Get in touch with FEDERG.">
+  <PageHeader
+    eyebrow="Contact"
+    title="Get in touch"
+    intro="Questions about membership, collaborations or our work? We would love to hear from you."
+    crumbs={[{ label: 'Contact', href: '/contact/' }]}
+  />
+  <section class="section section--white">
+    <div class="container contact">
+      <div class="contact__aside" data-reveal>
+        <h2>Other ways to reach us</h2>
+        <p>Follow FEDERG on social media for news and events.</p>
+        <ul role="list">
+          {
+            social.map((s) => (
+              <li>
+                <a class="arrow-link" href={s.href} rel="noopener" target="_blank">
+                  {s.label} <span aria-hidden="true">↗</span>
+                  <span class="visually-hidden"> (opens in a new tab)</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div data-reveal>
+        <div class="demo-banner" role="note">
+          <strong>Demo form.</strong> This is a practice project: the form is disabled and sends nothing. To contact FEDERG, use the
+          official website <a href="https://federg.org/contact/" rel="noopener">federg.org/contact</a>.
+        </div>
+
+        <!-- Visual only: no action, all fields disabled -->
+        <form class="form" aria-describedby="form-note" onsubmit="return false">
+          <fieldset disabled>
+            <legend class="visually-hidden">Contact form (disabled demo)</legend>
+            <div class="row">
+              <div class="field">
+                <label for="name">Name <span aria-hidden="true">*</span></label>
+                <input id="name" name="name" type="text" autocomplete="name" required />
+              </div>
+              <div class="field">
+                <label for="email">Email <span aria-hidden="true">*</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="subject">Subject <span aria-hidden="true">*</span></label>
+              <select id="subject" name="subject" required>
+                <option>Membership</option>
+                <option>Collaboration</option>
+                <option>Press</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Message <span aria-hidden="true">*</span></label>
+              <textarea id="message" name="message" rows="6" required></textarea>
+            </div>
+            <button class="btn btn--primary" type="submit">Send message</button>
+          </fieldset>
+          <p id="form-note" class="form__note">Fields marked * are required. This demo form is disabled.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 3rem 5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .contact {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact__aside h2 {
+    margin-bottom: 0.75rem;
+    font-size: var(--step-2);
+  }
+
+  .contact__aside p {
+    color: var(--ink-soft);
+  }
+
+  .contact__aside ul {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .demo-banner {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    background: #fff8d6;
+    border: 1px solid #f0d870;
+    color: #4a3b00;
+  }
+
+  .demo-banner a {
+    color: inherit;
+    font-weight: 600;
+  }
+
+  fieldset {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 560px) {
+    .row {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  label {
+    font-weight: 560;
+    font-size: var(--step--1);
+    color: var(--ink);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid #c9c7c0;
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  fieldset:disabled input,
+  fieldset:disabled select,
+  fieldset:disabled textarea {
+    cursor: not-allowed;
+  }
+
+  fieldset:disabled .btn {
+    justify-self: start;
+    background: #d9d7d0;
+    color: #4a4a63;
+    cursor: not-allowed;
+  }
+
+  .form__note {
+    margin-top: 1rem;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+</style>

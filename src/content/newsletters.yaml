@@ -1,0 +1,15 @@
+# Newsletters link to the PDF files published on the official website.
+- id: members-activities-2
+  type: members-activities
+  title: Members activities
+  issue: Summer issue · No. 2
+  date: 2026-02-15
+  summary: Awareness days, family meetings and research news from member associations across Europe.
+  pdf: https://federg.org/wp-content/uploads/2026/02/Summerfederg-members-activities-Newsletter-no2.pdf
+- id: representations-2026
+  type: representations
+  title: FEDERG representations
+  issue: 2026 edition
+  date: 2026-02-10
+  summary: Where FEDERG has represented patients this year, from EU policy events to reference network meetings.
+  pdf: https://federg.org/wp-content/uploads/2026/02/RREPRESENTATIONS-2026-1.pdf

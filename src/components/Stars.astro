@@ -1,0 +1,53 @@
+---
+/**
+ * Decorative ring of 12 stars, a nod to the EU flag inside the FEDERG logo.
+ * Position and size come in as props; the parent must be position:relative.
+ */
+interface Props {
+  size?: string;
+  x?: string;
+  y?: string;
+  opacity?: number;
+  spin?: boolean;
+}
+
+const { size = 'min(88%, 620px)', x = '50%', y = '46%', opacity = 0.55, spin = true } = Astro.props;
+
+const STAR = 'M0-3.2.75-1.03 3.04-.99 1.2.39 1.88 2.59 0 1.28-1.88 2.59-1.2.39-3.04-.99-.75-1.03Z';
+const stars = Array.from({ length: 12 }, (_, i) => {
+  const a = (i * 30 - 90) * (Math.PI / 180);
+  return `translate(${(Math.cos(a) * 36).toFixed(2)} ${(Math.sin(a) * 36).toFixed(2)})`;
+});
+---
+
+<svg
+  class:list={['stars', { 'stars--spin': spin }]}
+  viewBox="-50 -50 100 100"
+  aria-hidden="true"
+  focusable="false"
+  style={`--stars-size:${size};--stars-x:${x};--stars-y:${y};--stars-opacity:${opacity}`}
+>
+  {stars.map((t) => <path d={STAR} transform={t} />)}
+</svg>
+
+<style>
+  .stars {
+    position: absolute;
+    left: var(--stars-x);
+    top: var(--stars-y);
+    width: var(--stars-size);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    fill: var(--eu-yellow);
+    opacity: var(--stars-opacity);
+    pointer-events: none;
+  }
+  .stars--spin { animation: stars-spin 140s linear infinite; }
+  @keyframes stars-spin {
+    to { transform: rotate(360deg); }
+  }
+  /* The global reduced-motion rule shortens durations; an infinite spin must stop outright */
+  @media (prefers-reduced-motion: reduce) {
+    .stars--spin { animation: none !important; }
+  }
+</style>

@@ -1,0 +1,30 @@
+# Rebuilds the site every morning so events that have ended move from "Upcoming" to "Past".
+# The site is static: "upcoming" is decided when it is built, not when it is visited.
+#
+# It calls a Cloudflare Pages deploy hook. The hook URL works like a password, so it is stored as
+# the repository secret CLOUDFLARE_DEPLOY_HOOK, never in this file.
+# GitHub pauses scheduled workflows after 60 days without commits in a public repository;
+# re-enable it from the Actions tab if that happens.
+name: Daily rebuild
+
+on:
+  schedule:
+    - cron: '15 4 * * *' # 04:15 UTC every day
+  workflow_dispatch: # also runnable by hand from the Actions tab
+
+permissions: {}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger Cloudflare Pages build of main
+        env:
+          HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::The CLOUDFLARE_DEPLOY_HOOK secret is missing (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          curl --fail --silent --show-error -X POST "$HOOK"

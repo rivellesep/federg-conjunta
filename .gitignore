@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.env
+.env.*
+.DS_Store
+
+# Source versions by Enric and Albert, kept locally only
+referencias/

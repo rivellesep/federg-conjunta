@@ -1,0 +1,122 @@
+---
+import Stars from './Stars.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  intro?: string;
+  crumbs?: { label: string; href: string }[];
+}
+const { eyebrow, title, intro, crumbs = [] } = Astro.props;
+---
+
+<!-- Inner pages open with the same navy panel and EU stars as the home hero -->
+<header class="page-header">
+  <Stars size="clamp(340px, 46vw, 680px)" x="88%" y="40%" opacity={0.32} spin={false} />
+  <div class="container page-header__inner">
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="crumbs">
+          <ol>
+            <li><a href="/">Home</a></li>
+            {crumbs.map((c) => <li><a href={c.href}>{c.label}</a></li>)}
+          </ol>
+        </nav>
+      )
+    }
+    {eyebrow && <p class="page-header__eyebrow">{eyebrow}</p>}
+    <h1>{title}</h1>
+    {intro && <p class="page-header__intro">{intro}</p>}
+    <slot />
+  </div>
+  <svg class="page-header__notch" viewBox="0 0 1440 62" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 62 H1062 C1092 62 1098 54 1116 34 C1138 9 1146 1 1178 1 H1440 V62 Z"></path>
+  </svg>
+</header>
+
+<style>
+  .page-header {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 5rem) clamp(4rem, 3rem + 4vw, 6.5rem);
+    background:
+      radial-gradient(55% 80% at 90% 100%, rgb(255 100 0 / 28%), transparent 70%),
+      radial-gradient(40% 60% at 10% 0%, rgb(61 91 196 / 45%), transparent 70%),
+      var(--navy);
+    color: var(--on-navy);
+  }
+
+  .page-header__inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-header__notch {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    z-index: 2;
+    width: 100%;
+    height: clamp(24px, 4.3vw, 62px);
+    fill: var(--paper);
+  }
+
+  /* The notch takes the colour of the section that follows */
+  .page-header:has(+ :global(.section--white)) .page-header__notch {
+    fill: var(--white);
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+    font-size: var(--step--1);
+    color: var(--on-navy-soft);
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.4rem;
+    opacity: 0.6;
+  }
+
+  .crumbs a {
+    color: var(--on-navy-soft);
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    color: var(--on-navy);
+    text-decoration: underline;
+  }
+
+  /* Orange on navy: 5.3:1 */
+  .page-header__eyebrow {
+    margin-bottom: 1rem;
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  h1 {
+    max-width: 20ch;
+    font-size: clamp(2.4rem, 1.5rem + 4.2vw, 5.5rem);
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  .page-header__intro {
+    max-width: 40rem;
+    margin-top: 1.5rem;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-navy-soft);
+  }
+</style>

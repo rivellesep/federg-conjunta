@@ -1,0 +1,50 @@
+- id: erknet
+  name: ERKNet
+  category: Reference networks
+  description: The European Rare Kidney Disease Reference Network, with up-to-date information for patients and clinicians.
+  url: https://www.erknet.org/
+- id: erdera
+  name: ERDERA
+  category: Reference networks
+  description: European Rare Diseases Research Alliance, a partnership to speed up diagnosis and treatment research.
+  url: https://erdera.org/
+- id: eurordis
+  name: EURORDIS
+  category: Patient organisations
+  description: Rare Diseases Europe, the alliance of rare disease patient organisations.
+  url: https://www.eurordis.org/
+- id: rdi
+  name: Rare Diseases International
+  category: Patient organisations
+  description: The global alliance of people living with a rare disease.
+  url: https://www.rarediseasesinternational.org/
+- id: ekpf
+  name: EKPF
+  category: Patient organisations
+  description: European Kidney Patients' Federation.
+  url: https://ekpf.eu/
+- id: ekha
+  name: EKHA
+  category: Policy
+  description: European Kidney Health Alliance, bringing kidney health to the EU agenda.
+  url: https://ekha.eu/
+- id: era
+  name: European Renal Association
+  category: Professional societies
+  description: The European society for nephrology professionals.
+  url: https://www.era-online.org/
+- id: espn
+  name: ESPN
+  category: Professional societies
+  description: European Society for Paediatric Nephrology.
+  url: https://www.espn-online.org/
+- id: orphanet
+  name: Orphanet
+  category: Information
+  description: Reference portal for information on rare diseases and orphan drugs.
+  url: https://www.orpha.net/
+- id: world-kidney-day
+  name: World Kidney Day
+  category: Information
+  description: Global awareness campaign held every second Thursday of March.
+  url: https://www.worldkidneyday.org/
