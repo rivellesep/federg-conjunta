@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
-    "cms-auth:deploy": "wrangler deploy --config cms-auth/wrangler.toml"
+    "cms-auth:deploy": "wrangler deploy --config cms-auth/wrangler.toml",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
@@ -20,6 +21,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "chrome-launcher": "^1.2.2",
+    "lighthouse": "^13.6.0",
     "pagefind": "^1.5.2",
     "typescript": "^6.0.3",
     "wrangler": "^4.155.0"
