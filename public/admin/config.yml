@@ -13,9 +13,8 @@ backend:
   name: github
   repo: rivellesep/federg-conjunta
   branch: main
-  # OAuth proxy on Cloudflare Workers, see cms-auth/. Replace SUBDOMAIN with the account's
-  # workers.dev subdomain once the worker is deployed.
-  base_url: https://federg-cms-auth.SUBDOMAIN.workers.dev
+  # OAuth proxy on Cloudflare Workers, see cms-auth/
+  base_url: https://federg-cms-auth.enric-albert-federg.workers.dev
   # The repository is public, so the token only needs public_repo, not access to private repos
   auth_scope: public_repo
   # One commit on main per published draft, instead of a merge commit
