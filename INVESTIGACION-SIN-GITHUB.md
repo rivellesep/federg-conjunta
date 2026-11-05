@@ -149,7 +149,6 @@ El precio es mantener un poco de código propio y aceptar que Cloudflare pida un
 - Probar la edición de un evento, el enlace de vista previa en el editor, el borrado y cómo deshacer un cambio.
 - Sin cuenta de GitHub, el editor no puede usar el botón Revert de GitHub. Deshacer pasa por volver a editar en el editor o por pedirlo a quien administra.
 - Sin acceso a GitHub ni a Cloudflare, el editor tampoco ve por qué falla una construcción. Habría que avisar a quien administra.
-- La noticia de prueba "TEST email CMS" sigue publicada en la rama `sin-github`.
 - Si algún día se usa en serio: cambiar la rama a `main`, revisar la regla de Access, guardar la clave privada en un gestor de contraseñas y apuntar cómo volver a montarlo todo.
 - El botón del editor sigue diciendo "Iniciar sesión con GitHub", aunque no pide GitHub. Es el texto de Sveltia para este tipo de conexión y puede confundir.
 
