@@ -12,7 +12,8 @@
     "astro": "astro",
     "cms-auth:deploy": "wrangler deploy --config cms-auth/wrangler.toml",
     "lighthouse": "node scripts/lighthouse.mjs",
-    "revision": "node scripts/revision-dispositivos.mjs"
+    "revision": "node scripts/revision-dispositivos.mjs",
+    "cms-email:deploy": "node cms-email/build-config.mjs && wrangler deploy --config cms-email/wrangler.toml"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
