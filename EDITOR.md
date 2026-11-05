@@ -1,49 +1,48 @@
-# Guía para editar la web
+# Guía para editar la web (acceso con email, sin GitHub)
 
 > **Proyecto de prácticas.** Esta web no es la oficial de FEDERG (la oficial es [federg.org](https://federg.org/)). No publiques nunca datos reales de pacientes ni fotos de personas reales. Las historias de pacientes son siempre inventadas.
 
-Esta guía es para quien va a escribir noticias o cambiar eventos y no ha tocado nunca el código. No hace falta instalar nada: todo se hace desde el navegador.
+> **Versión de prueba.** Esta guía es la del editor con acceso por email, que está en pruebas en la rama `sin-github`. La guía del editor con cuenta de GitHub, que es el que usa hoy la web publicada, está en la rama `main`. Mientras dure la prueba, lo que publiques aquí sale en la web de prueba [sin-github.federg-conjunta.pages.dev](https://sin-github.federg-conjunta.pages.dev/), no en la web principal.
+
+Esta guía es para quien va a escribir noticias o cambiar eventos y no ha tocado nunca el código. No necesitas cuenta de GitHub ni instalar nada: todo se hace desde el navegador con tu email.
 
 ## Antes de empezar
 
-Necesitas tres cosas:
-
-1. Una cuenta de GitHub. Si no tienes, se crea gratis en [github.com](https://github.com/).
-2. Permiso de escritura en el repositorio `rivellesep/federg-conjunta`. Pídeselo a quien lo administra: te llegará una invitación por correo que tienes que aceptar.
-3. Activar la verificación en dos pasos en tu cuenta de GitHub. Con tu cuenta se puede cambiar la web entera, así que conviene protegerla bien.
+Solo necesitas una cosa: que quien administra la web haya añadido tu email a la lista de personas que pueden entrar. Si no lo ha hecho, al intentar entrar verás un aviso de que no tienes acceso.
 
 ## Cómo funciona, en pocas palabras
 
-Cada cosa que guardas en el editor es un **borrador**. Los borradores no se ven en la web pública, pero cada uno tiene su propia **vista previa**, que es una copia de la web con tu cambio puesto. Cuando el borrador está bien, lo **publicas** y en uno o dos minutos la web pública se actualiza sola.
+Cada cosa que guardas en el editor es un **borrador**. Los borradores no se ven en la web, pero cada uno tiene su propia **vista previa**, que es una copia de la web con tu cambio puesto. Cuando el borrador está bien, lo **publicas** y en uno o dos minutos la web se actualiza sola.
 
-Por dentro, el editor guarda los borradores en GitHub (cada uno es una "pull request") y Cloudflare construye la web cada vez que algo cambia. No necesitas entender esto para editar, pero te ayudará si algo falla.
+Por dentro, el editor guarda tus cambios en un repositorio de GitHub a través de un "robot" con permiso solo para esta web. Tú no ves GitHub en ningún momento, pero cada cambio queda guardado en el historial con tu nombre o con un código que te identifica, nunca con tu email.
 
 ## Entrar en el editor
 
-1. Abre [federg-conjunta.pages.dev/admin/](https://federg-conjunta.pages.dev/admin/).
-2. Pulsa **Iniciar sesión con GitHub**.
-3. Se abre una ventana de GitHub. La primera vez te pedirá permiso para la aplicación del editor: acéptalo. Solo pide acceso a repositorios públicos.
-4. Ya estás dentro. A la izquierda verás las colecciones: Noticias, Eventos, Historias de pacientes, Miembros y Páginas.
+1. Abre [federg-cms-email.enric-albert-federg.workers.dev/admin/](https://federg-cms-email.enric-albert-federg.workers.dev/admin/).
+2. Cloudflare te pide tu email. Escríbelo y pulsa el botón para recibir el código.
+3. Te llega un correo con un código de unos pocos números. Cópialo en la página. Si no te llega, mira en la carpeta de spam.
+4. Se abre el editor con el título **FEDERG CMS sin GitHub (prueba)**. Pulsa **Iniciar sesión con GitHub**. Sí, pone GitHub, pero **no te pedirá ninguna cuenta**: se abre una ventana un momento, se cierra sola y ya estás dentro.
+5. A la izquierda verás las colecciones: Noticias, Eventos, Historias de pacientes, Miembros y Páginas.
 
-El navegador recuerda la sesión. Si usas un ordenador compartido, cierra la sesión al terminar desde el círculo con tu foto, arriba a la derecha.
+El navegador recuerda la sesión durante un tiempo. Si usas un ordenador compartido, cierra la sesión al terminar desde el círculo de arriba a la derecha y cierra el navegador.
 
 ![Lista de noticias en el editor](capturas/01-cms-noticias-borrador-test.jpg)
 
 ## Crear una noticia con imagen
 
-1. Entra en **Noticias** y pulsa el botón redondo del lápiz (o el **+** de arriba).
+1. Entra en **Noticias** y pulsa **Nuevo** (o el **+** de arriba).
 2. Rellena los campos. Los que llevan un asterisco rojo son obligatorios:
    - **Título** y **Fecha**. La fecha sale de hoy por defecto.
    - **Resumen**: una o dos frases. Es lo que aparece en las tarjetas y en el buscador.
-   - **Imagen destacada**: pulsa **Explorar** o arrastra la imagen desde tu ordenador. Mejor en horizontal. El editor la convierte a WebP y la reduce si es muy grande, así que no hace falta prepararla.
+   - **Imagen destacada**: pulsa **Explorar** o arrastra la imagen desde tu ordenador. Mejor en horizontal. El editor la convierte y la reduce si es muy grande, así que no hace falta prepararla.
    - **Descripción de la imagen**: explica qué se ve, para las personas que no pueden ver la imagen. Por ejemplo: "Riñón naranja junto a un círculo de estrellas amarillas". Es obligatoria.
    - **Etiquetas**: opcionales. Pulsa Intro después de cada una.
    - **Texto**: el cuerpo de la noticia. Escríbelo en inglés, como el resto de la web.
-3. Pulsa **Guardar**. Saldrá un aviso preguntando si quieres enviar la noticia a revisión. Puedes decir que sí o dejarlo para más tarde; en los dos casos el borrador queda guardado.
+3. Pulsa **Guardar**. Si sale un aviso preguntando si quieres enviar la noticia a revisión, puedes decir que sí o dejarlo para más tarde. En los dos casos el borrador queda guardado.
 
 ![Noticia con imagen y texto alternativo](capturas/09-cms-noticia-test-imagen-alt.jpg)
 
-**Cuidado con las imágenes de otros borradores.** Al elegir una imagen, el editor también enseña las que han subido otras personas en borradores que todavía no se han publicado. Si eliges una de esas, tu noticia apunta a una imagen que aún no existe en la web y la vista previa falla. Nos pasó en la prueba. Sube siempre la imagen desde tu ordenador, con un nombre de archivo que no se repita.
+**Cuidado con las imágenes de otros borradores.** Al elegir una imagen, el editor también enseña las que han subido otras personas en borradores que todavía no se han publicado. Si eliges una de esas, tu noticia apunta a una imagen que aún no existe en la web y la vista previa falla. Sube siempre la imagen desde tu ordenador, con un nombre de archivo que no se repita.
 
 ## Modificar un evento
 
@@ -58,11 +57,9 @@ No hace falta mover los eventos que ya han pasado: la web se reconstruye sola ca
 Hay dos maneras de ver cómo quedará:
 
 - **El ojo** que hay arriba a la izquierda del formulario abre una vista previa dentro del editor. Es rápida pero aproximada.
-- **La vista previa real**, que es la web completa con tu cambio. Tarda uno o dos minutos en estar lista después de guardar. Para encontrarla, entra en la [lista de pull requests](https://github.com/rivellesep/federg-conjunta/pulls), abre la de tu borrador y busca el comentario de Cloudflare. El enlace es el de **Branch Preview URL**, con una forma parecida a `cms-events-world-kidney-day.federg-conjunta.pages.dev`.
+- **La vista previa real**, que es la web completa con tu cambio. Tarda uno o dos minutos en estar lista después de guardar. Su dirección se forma con el tipo de contenido y el nombre de la entrada. Por ejemplo, una noticia llamada "TEST email CMS" tiene su vista previa en `cms-news-test-email-cms.federg-conjunta.pages.dev`. El editor debería enseñar también un enlace a esta vista previa junto al borrador.
 
-Si en ese comentario pone **Build failed** en lugar del enlace, el borrador tiene un problema. Mira el apartado "Si falla la publicación".
-
-![Vista previa de un evento modificado](capturas/07-preview-evento.jpg)
+Si la vista previa no carga después de unos minutos, el borrador puede tener un problema. Mira el apartado "Si falla la publicación".
 
 ## Estados de un borrador
 
@@ -72,7 +69,7 @@ Cada borrador pasa por tres estados, que se cambian con el desplegable que hay j
 - **En revisión**: quieres que otra persona lo mire.
 - **Listo**: se puede publicar.
 
-El icono de **Flujo editorial** (en la barra de abajo o a la izquierda, según el tamaño de la pantalla) enseña todos los borradores ordenados en esas tres columnas.
+El icono de **Flujo editorial** enseña todos los borradores ordenados en esas tres columnas.
 
 ![Flujo editorial](capturas/13-cms-flujo-editorial.jpg)
 
@@ -80,9 +77,9 @@ El icono de **Flujo editorial** (en la barra de abajo o a la izquierda, según e
 
 1. Abre el borrador y cambia su estado a **Listo**.
 2. Aparece el botón **Publicar**. Púlsalo y confirma.
-3. Espera uno o dos minutos y recarga la página pública para ver el cambio.
+3. Espera uno o dos minutos y recarga la web para ver el cambio.
 
-Si la página no cambia, prueba a recargar sin caché (Ctrl+Mayús+R) o espera un poco más. En la prueba vimos que una noticia ya borrada seguía apareciendo un rato en su dirección antigua por la caché de Cloudflare, aunque ya no salía en la lista de noticias.
+Si la página no cambia, prueba a recargar sin caché (Ctrl+Mayús+R) o espera un poco más.
 
 ## Borrar una noticia
 
@@ -98,25 +95,20 @@ Depende de si el cambio ya está publicado o no.
 
 **Si todavía es un borrador**, lo más fácil es descartarlo. En el **Flujo editorial**, cada borrador tiene un icono de papelera que lo elimina sin tocar la web. Si solo quieres quitar lo que has cambiado en el formulario, el menú **⋮** tiene la opción **Revertir todos los cambios**.
 
-**Si ya está publicado**, hay dos caminos, y ninguno necesita terminal:
+**Si ya está publicado**, abre la entrada, déjala como estaba y vuelve a guardar y publicar. El menú **⋮** tiene una opción **Historial** donde se pueden consultar los cambios anteriores.
 
-- **Desde el editor.** Abre la entrada, deja el texto como estaba y vuelve a guardar y publicar. Es lo más sencillo para cambios pequeños. El menú **⋮** tiene una opción **Historial** donde se pueden consultar los cambios anteriores.
-- **Desde la web de GitHub**, para deshacer de golpe todo lo que cambió una publicación:
-  1. Entra en la [lista de pull requests cerradas](https://github.com/rivellesep/federg-conjunta/pulls?q=is%3Apr+is%3Aclosed) y abre la del cambio. Tienen títulos como `Update Evento "world-kidney-day-2027"`.
-  2. Abajo del todo hay un botón **Revert**. Púlsalo: GitHub prepara una pull request nueva que hace exactamente lo contrario.
-  3. En esa pull request nueva, pulsa **Merge pull request** y confirma.
-  4. Cloudflare reconstruye la web y en uno o dos minutos vuelve a estar como antes.
+Si el cambio es grande o no sabes cómo dejarlo como estaba, pide ayuda a quien administra la web. Esa persona puede deshacer de golpe cualquier publicación desde GitHub, porque todo queda guardado en el historial.
 
 ## Si falla la publicación
 
-Cada vez que algo cambia, Cloudflare construye la web de nuevo. Si la construcción falla, **la web pública no se rompe**: Cloudflare sigue enseñando la última versión que funcionaba. Lo comprobamos en la prueba: un borrador falló y la web pública siguió igual.
+Cada vez que algo cambia, Cloudflare construye la web de nuevo. Si la construcción falla, **la web no se rompe**: Cloudflare sigue enseñando la última versión que funcionaba.
 
-**Dónde se ve el error**
+**Cómo lo notarás**
 
-- En un borrador: en su pull request de GitHub, el comentario de Cloudflare pone **Build failed** y al lado del commit sale una cruz roja.
-- Después de publicar: en la [lista de commits de main](https://github.com/rivellesep/federg-conjunta/commits/main), el último commit tiene una cruz roja en lugar de una marca verde.
-- El detalle del error está en Cloudflare, en Workers & Pages, proyecto `federg-conjunta`, pestaña Deployments, botón **View logs**. Solo lo ven las personas con acceso a esa cuenta de Cloudflare, así que si no lo tienes, avisa a quien administra la web.
-- Si falla la reconstrucción de cada mañana, el aviso sale en la pestaña **Actions** del repositorio.
+- En un borrador: la vista previa no aparece o no carga después de varios minutos.
+- Después de publicar: el cambio no aparece en la web aunque hayan pasado más de cinco minutos.
+
+Con este acceso no ves los registros de Cloudflare ni de GitHub, así que si pasa algo de esto, avisa a quien administra la web y dile qué estabas cambiando.
 
 **Causas más habituales**
 
@@ -127,9 +119,7 @@ Cada vez que algo cambia, Cloudflare construye la web de nuevo. Si la construcci
 **Cómo se arregla**
 
 - Si el error está en un borrador, corrígelo en el editor y vuelve a guardar. Cloudflare prueba otra vez solo.
-- Si el error ya está publicado, corrígelo en el editor y publica, o deshaz la publicación con el botón **Revert** de GitHub como se explica arriba. Hasta que se arregle, ninguna publicación nueva llegará a la web, porque todas se construyen encima del error.
-
-![Build fallido en una pull request](capturas/11-github-pr3-build-fallido.jpg)
+- Si el error ya está publicado, corrígelo en el editor y publica. Hasta que se arregle, ninguna publicación nueva llegará a la web, porque todas se construyen encima del error.
 
 ## Normas de contenido
 

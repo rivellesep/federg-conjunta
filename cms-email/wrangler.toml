@@ -19,14 +19,17 @@ binding = "ASSETS"
 # /auth and /api/github/* are not files, so they always reach the Worker
 not_found_handling = "none"
 
+# None of these are secrets: they identify the repository, the Access application and the
+# GitHub App, but give no access on their own
 [vars]
 REPO_OWNER = "rivellesep"
 REPO_NAME = "federg-conjunta"
+ACCESS_TEAM_DOMAIN = "federg-practicas.cloudflareaccess.com"
+# Audience tag of the Access application created with "Enable access" on the workers.dev URL
+ACCESS_AUD = "7d6f47ee7740fc65f286cec822483fd52a1229e0b61cbf82836f84c15db4be79"
+GITHUB_APP_ID = "5625343"
+GITHUB_INSTALLATION_ID = "178870108"
 
-# Set in the dashboard, not here (Settings > Variables and Secrets):
-#   ACCESS_TEAM_DOMAIN      e.g. myteam.cloudflareaccess.com   (Text)
-#   ACCESS_AUD              Access application audience tag      (Text)
-#   GITHUB_APP_ID           App ID of the GitHub App             (Text)
-#   GITHUB_INSTALLATION_ID  Installation ID on this repository   (Text)
-#   GITHUB_APP_PRIVATE_KEY  contents of the app's .pem file      (Secret)
-#   EDITOR_ALIASES          optional {"email":"Name", ...}       (Secret)
+# Secrets, set with `npx wrangler secret put NAME --config cms-email/wrangler.toml`:
+#   GITHUB_APP_PRIVATE_KEY  contents of the GitHub App's .pem file
+#   EDITOR_ALIASES          optional {"email":"Name", ...} for commit messages

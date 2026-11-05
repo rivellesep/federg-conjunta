@@ -237,7 +237,8 @@ const signInPage = (origin) =>
 // GitHub API proxy
 
 const proxyGitHub = async (request, env, email, url) => {
-  const path = url.pathname.slice(API_PREFIX.length) || '/';
+  // Sveltia treats a custom api_root like GitHub Enterprise and adds /api/v3 to REST calls
+  const path = url.pathname.slice(API_PREFIX.length).replace(/^\/api\/v3(?=\/|$)/, '') || '/';
   const method = request.method.toUpperCase();
   const repoPrefix = `/repos/${env.REPO_OWNER}/${env.REPO_NAME}`;
   const name = await editorName(email, env);

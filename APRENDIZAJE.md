@@ -8,6 +8,7 @@ La versión conjunta junta los dos rediseños que hicimos por separado, el de En
 - Editor: [federg-conjunta.pages.dev/admin/](https://federg-conjunta.pages.dev/admin/), con Sveltia CMS y acceso con GitHub a través de un Worker de Cloudflare (`federg-cms-auth`).
 - Cada borrador del editor tiene su propia vista previa, y la web se reconstruye sola cada mañana para mover los eventos pasados.
 - La guía para quien edita está en [EDITOR.md](EDITOR.md).
+- En la rama `sin-github` hay una prueba de editor con acceso por email, sin cuenta de GitHub. Ver la sección 7 y [INVESTIGACION-SIN-GITHUB.md](INVESTIGACION-SIN-GITHUB.md).
 
 ## 1. Qué se conserva de cada versión original y por qué
 
@@ -134,7 +135,44 @@ Notas para leer la tabla:
 - Hay que entender por qué la página borrada quedó en la caché de Cloudflare con una semana de duración, y si hace falta purgarla después de borrar algo.
 - Las medidas de Lighthouse son de una sola página y de un solo día. Para conclusiones más firmes habría que medir más páginas y en varios días.
 
-## 7. Qué hemos aprendido, dificultades y qué haríamos distinto
+## 7. Editar con GitHub o sin GitHub
+
+Después de la primera prueba, el tutor nos pidió buscar una forma de editar sin cuenta de GitHub. La investigación completa, con las opciones comparadas y las fuentes, está en [INVESTIGACION-SIN-GITHUB.md](INVESTIGACION-SIN-GITHUB.md). Aquí comparamos los dos flujos que tenemos ahora: el publicado, con cuenta de GitHub, y el de prueba, con acceso por email (rama `sin-github`, Worker `federg-cms-email`).
+
+| | Con GitHub (web publicada) | Sin GitHub (prueba) |
+| --- | --- | --- |
+| Cómo entra el editor | Cuenta de GitHub con verificación en dos pasos y permiso de escritura en el repositorio | Email y código de Cloudflare Access. En la prueba entramos como miembro de la cuenta de Cloudflare |
+| Quién decide quién entra | La lista de colaboradores del repositorio | La regla de Cloudflare Access |
+| Qué puede tocar el editor | Todo el repositorio, también desde la web de GitHub | Solo lo que el editor necesita: el Worker bloquea el resto |
+| Token | Lo guarda el navegador del editor y sirve para todos sus repositorios públicos | Lo guarda el Worker, dura una hora y solo sirve para este repositorio |
+| Quién aparece en el historial | La cuenta de GitHub de cada persona | El robot `federg-cms-email[bot]`, con el nombre o un código del editor en el mensaje |
+| Vista previa | Rama, pull request y preview de Cloudflare | Lo mismo |
+| Publicar | Fusionar la pull request en `main` | Lo mismo. En la prueba se fusiona en `sin-github` |
+| Deshacer | Desde el editor o con el botón Revert de GitHub | Desde el editor. El Revert solo lo puede hacer quien tenga GitHub |
+| Ver por qué falla una construcción | El editor ve la cruz roja en GitHub | El editor no lo ve: tiene que avisar a quien administra |
+| Coste | 0 € | 0 €, pero Zero Trust pide un método de pago al activarlo |
+| Qué hay que mantener | El Worker de OAuth, unas 440 líneas que no son nuestras | El Worker propio (unas 380 líneas), la GitHub App y la regla de Access |
+
+**Medido**
+
+- Las 26 comprobaciones del Worker con Cloudflare y GitHub simulados pasan (`npm run cms-email:test`).
+
+**Observado** (prueba del 5 de noviembre de 2026)
+
+- Se entra al editor sin ninguna cuenta de GitHub y se crea y publica una noticia con imagen. Se crearon la rama y la pull request #5, Cloudflare hizo la vista previa del borrador y, al publicar, la noticia salió en la web de prueba. La web principal no cambió.
+- El commit lo firma el robot y en el mensaje aparece "editor 1cc35603", no el email.
+- La primera vez falló porque Sveltia añade `/api/v3` a las direcciones de un servidor que no es GitHub.com. Lo arreglamos en el Worker.
+- La pantalla de Cloudflare para proteger un Worker solo deja elegir entre "miembros de la cuenta de Cloudflare" o "un dominio de email entero", no una lista de emails.
+- Cloudflare pidió un método de pago para activar Zero Trust, aunque el plan sea gratuito.
+
+**Estimado** (sin probar)
+
+- Para una persona de la asociación sin cuenta de Cloudflare habría que crear una regla por emails en el panel de Zero Trust. Según la documentación funciona, pero no lo hemos probado.
+- Editar un evento, borrar, deshacer y ver el enlace de vista previa dentro del editor deberían funcionar igual que en el flujo con GitHub, porque el editor es el mismo, pero no lo hemos comprobado con el Worker.
+
+En resumen, el flujo sin GitHub quita la barrera más grande para la asociación y reduce lo que puede hacer el editor, a cambio de mantener código propio y perder la firma personal en el historial y el acceso directo a GitHub para deshacer o ver errores.
+
+## 8. Qué hemos aprendido, dificultades y qué haríamos distinto
 
 *Esta parte la escribimos nosotros.*
 
