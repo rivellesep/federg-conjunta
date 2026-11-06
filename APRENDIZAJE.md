@@ -123,15 +123,15 @@ Notas para leer la tabla:
 
 **Límites y tareas pendientes**
 
-- No hay roles: todas las personas colaboradoras pueden publicar. Una protección de rama en `main` obligaría a revisar, pero probablemente impediría publicar desde el editor. No lo hemos probado.
+- No hay roles: todas las personas colaboradoras pueden publicar. La propuesta de editores y revisores con una protección de rama en `main`, lo que se rompería del editor y cómo probarlo están en [PERMISOS.md](PERMISOS.md). Todavía no lo hemos probado.
 - El token del editor sirve para todos los repositorios públicos de quien inicia sesión.
 - La biblioteca de medios enseña imágenes de borradores ajenos sin publicar, lo que puede romper una vista previa.
 - Las imágenes de noticias borradas se quedan en el repositorio y hay que borrarlas a mano.
-- No hay copia del repositorio fuera de GitHub, ni una nota con la configuración de Cloudflare y de la aplicación OAuth para volver a montarla.
+- La copia del repositorio fuera de GitHub, lo que habría que volver a montar y el relevo de quien administra están en [RECUPERACION.md](RECUPERACION.md). Hemos probado la copia espejo, pero no una restauración completa.
 - GitHub pausa las acciones programadas tras 60 días sin commits en un repositorio público. Si eso pasa, la reconstrucción diaria deja de funcionar hasta reactivarla.
 - Sveltia está fijado a una versión concreta. Actualizarlo es cambiar el número en `public/admin/index.html` y probar el editor.
 - El editor está en español y el contenido en inglés. Si la web fuera multilingüe, habría que configurar los idiomas en el CMS.
-- Hay que entender por qué la página borrada quedó en la caché de Cloudflare con una semana de duración, y si hace falta purgarla después de borrar algo.
+- Resuelto: la página borrada quedó en caché una semana por la retención de archivos de Cloudflare Pages. El 6/11 ya daba 404. La explicación y qué hacer si hay que retirar algo con urgencia están en [CACHE.md](CACHE.md).
 - Las medidas de Lighthouse son de una sola página y de un solo día. Para conclusiones más firmes habría que medir más páginas y en varios días.
 
 ## 7. Qué hemos aprendido, dificultades y qué haríamos distinto

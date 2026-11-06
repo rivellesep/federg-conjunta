@@ -82,7 +82,7 @@ El icono de **Flujo editorial** (en la barra de abajo o a la izquierda, según e
 2. Aparece el botón **Publicar**. Púlsalo y confirma.
 3. Espera uno o dos minutos y recarga la página pública para ver el cambio.
 
-Si la página no cambia, prueba a recargar sin caché (Ctrl+Mayús+R) o espera un poco más. En la prueba vimos que una noticia ya borrada seguía apareciendo un rato en su dirección antigua por la caché de Cloudflare, aunque ya no salía en la lista de noticias.
+Si la página no cambia, prueba a recargar sin caché (Ctrl+Mayús+R) o espera un poco más.
 
 ## Borrar una noticia
 
@@ -91,6 +91,10 @@ Si la página no cambia, prueba a recargar sin caché (Ctrl+Mayús+R) o espera u
 3. Vuelve a abrirla y pulsa **Eliminar** otra vez. Ahora sí se publica el borrado.
 
 La imagen de la noticia no se borra sola. Si ya no hace falta, se puede borrar desde la **Biblioteca de medios** (el icono de la imagen en la barra).
+
+**Después de borrar, la dirección antigua puede seguir funcionando hasta 7 días.** La noticia desaparece enseguida de la lista, del buscador y del mapa del sitio, pero Cloudflare guarda una copia de la página durante una semana y la sigue enseñando a quien tenga el enlace exacto. No es un fallo del borrado: es cómo funciona Cloudflare Pages y no se puede purgar en `pages.dev`. Lo explicamos en [CACHE.md](CACHE.md).
+
+**Si hay que retirar algo con urgencia** (por ejemplo, un dato personal publicado por error), no la borres todavía. Primero edítala, cambia el texto y la imagen por "Contenido retirado" y publícala: como la dirección sigue existiendo, el cambio se ve en uno o dos minutos. Pasada una semana, ya puedes borrarla. Avisa también a quien administra el repositorio, porque el contenido sigue en el historial de cambios.
 
 ## Deshacer un cambio
 

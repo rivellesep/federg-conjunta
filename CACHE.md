@@ -47,8 +47,11 @@ Si hubiera que **retirar algo con urgencia**, por ejemplo un dato personal publi
 
 Nada de esto borra el contenido del historial de Git: el texto y la imagen siguen en los commits antiguos, y la imagen de la noticia de prueba sigue en el repositorio. Si el dato fuera de verdad sensible habría que reescribir el historial, y eso no se puede hacer desde el editor.
 
+## Comprobación del 6/11
+
+Volvimos a medir el 6 de noviembre de 2026 a las 11:27 UTC. `/news/test/` ya responde **404** con `Cache-Control: no-store`, igual que cualquier dirección que no existe. La copia caducó cuando habíamos calculado (hacia el 5/11 a mediodía), así que se confirma que era una caché de una semana y que se va sola.
+
 ## Pendiente de comprobar
 
-- Volver a medir el 6/11/2026 para confirmar que `/news/test/` ya responde 404 cuando caduque la semana.
 - Probar la opción 2 (redirección) en una rama, con una página creada y borrada a propósito.
 - Solo hemos medido desde el centro de datos de Madrid. En otros centros la copia puede caducar en otro momento o no existir.
