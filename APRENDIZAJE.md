@@ -136,16 +136,24 @@ Notas para leer la tabla:
 
 ## 7. Qué hemos aprendido, dificultades y qué haríamos distinto
 
-*Esta parte la escribimos nosotros.*
-
 ### Qué hemos aprendido
 
--
+- **Astro no es un CMS.** Hasta montar Sveltia, cambiar una coma era editar un `.md` y hacer commit. Con el editor, el resumen del evento World Kidney Day 2027 se cambió desde el navegador y llegó a `main` como un solo commit (`208c633`).
+- **Un borrador es una rama y una pull request.** Cada vez que guardamos se creó una rama `cms/...` y un PR (#2, #3 y #4), y Cloudflare tuvo la vista previa en un minuto. Entenderlo nos ayudó a saber dónde mirar cuando algo fallaba.
+- **Una web estática falla de forma segura.** El PR #3 dio "Build failed" porque faltaba la imagen, y la web publicada siguió igual. El error no llega a la gente hasta que se publica.
+- **Borrar no es retirar.** La noticia TEST desapareció del listado, del buscador y del sitemap, pero `/news/test/` siguió respondiendo una semana por la retención de Cloudflare Pages (`CACHE.md`). Para retirar algo urgente hay que editarlo antes de borrarlo.
+- **Git guarda el historial, pero no es una copia de seguridad.** Los secretos del Worker, la aplicación OAuth, el deploy hook y la lista de colaboradores no están en el repositorio (`RECUPERACION.md`).
 
 ### Dificultades
 
--
+- **La imagen de otro borrador.** Elegimos el gallo desde "Recursos de la colección", pero estaba en el borrador de Enric (PR #1) y no en el nuestro. En el editor se veía bien y el build falló, así que tardamos en entender qué pasaba.
+- **Medir sin engañarnos.** La primera tabla de Lighthouse comparaba federg.org publicado con nuestra web en local. Al repetirlo con las dos publicadas, el rendimiento de federg.org en móvil varió entre 58 y 70 en tres pasadas, y por eso guardamos la mediana.
+- **Juntar dos versiones.** Teníamos los miembros en un JSON en una versión y en un YAML en la otra, y las historias en `.md` y en `.mdx`. Para el editor hubo que pasarlo todo a un archivo por entrada y a Markdown.
+- **Cosas del entorno.** Clonar el repositorio en Windows falló por "Filename too long" y Lighthouse no encontraba Chrome. Tuvimos que activar `core.longpaths` y usar Edge.
 
 ### Qué haríamos distinto
 
--
+- **Pensar en el editor desde el principio.** Si hubiéramos definido los esquemas pensando en Sveltia, no habríamos tenido que mover las imágenes a `src/assets/` ni convertir el MDX a Markdown.
+- **Probar con alguien que no haya tocado el código.** Las trampas de la biblioteca de medios y del borrado en dos pasos las encontramos nosotros, pero alguien nuevo habría encontrado otras.
+- **Medir desde el primer día y en más páginas.** Lighthouse solo midió la portada y la revisión de dispositivos llegó al final. Con `npm run lighthouse` y `npm run revision` desde el principio habríamos visto los problemas antes.
+- **Montar los permisos y la recuperación antes de abrir el editor.** Hoy cualquiera de los dos publica sin revisión. Una organización de GitHub con editores y revisores (`PERMISOS.md`) y una copia espejo habrían estado listas desde el principio.
