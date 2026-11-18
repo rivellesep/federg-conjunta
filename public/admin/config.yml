@@ -5,13 +5,13 @@
 # a field there, do the same here, or the CMS will save files that break the build.
 # Labels and hints are in Spanish for the editor. The site content itself stays in English.
 
-app_title: FEDERG CMS (proyecto de prácticas)
+app_title: FEDERG CMS · PRUEBA DE PERMISOS (repositorio de prueba)
 logo:
   src: /favicon.svg
 
 backend:
   name: github
-  repo: rivellesep/federg-conjunta
+  repo: MrAlbertus/federg-permisos-prueba
   branch: main
   # OAuth proxy on Cloudflare Workers, see cms-auth/
   base_url: https://federg-cms-auth.enric-albert-federg.workers.dev
