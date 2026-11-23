@@ -57,6 +57,17 @@ Una vez aprobada, la persona editora también puede pulsar **Publicar** y funcio
 
 **Con la opción A** (rama `sin-github`), quien guarda y publica en GitHub es la GitHub App, no la persona. Las reglas de `main` se aplicarían igual, pero los papeles habría que comprobarlos en el Worker (qué correos pueden publicar y cuáles solo guardar), porque para GitHub todos los cambios vendrían del mismo robot (estimado).
 
+## Retirar algo con urgencia con las reglas activadas
+
+Con las reglas, retirar un dato personal publicado por error necesita que otra persona apruebe el cambio, y puede que nadie esté disponible en ese momento. Para que una urgencia sea rápida sin saltarse la revisión en el día a día:
+
+1. **Solo los administradores en la lista de excepciones, y solo para pull requests.** En la regla de `main` se añade el rol de administrador a *Bypass list* con la opción *For pull requests only*: un administrador puede fusionar una pull request sin aprobación, pero sigue sin poder subir nada directo a `main`. GitHub deja constancia de cada vez que alguien se salta la regla en *Rule insights* (documentado; no lo hemos probado).
+2. **Un procedimiento escrito.** El administrador edita la noticia en el editor, sustituye el contenido por "Contenido retirado" (como explica [CACHE.md](CACHE.md), sobrescribir es más rápido que borrar) y lo publica. Avisa a la revisora, que revisa esa pull request después. La excepción se usa solo para retirar, nunca para publicar contenido nuevo.
+3. **Dos administradores**, titular y suplente ([RECUPERACION.md](RECUPERACION.md)), para que siempre haya alguien que pueda hacerlo.
+4. **Con dominio propio**, además, una regla de redirección en Cloudflare puede ocultar la dirección al momento sin tocar Git. Después se hace el cambio normal en el repositorio (estimado).
+
+En el día a día no cambia nada: los editores siguen sin poder publicar sin aprobación, y las excepciones quedan registradas y se pueden revisar.
+
 ## Resultado de la prueba (23/11)
 
 ### Montaje
@@ -98,10 +109,13 @@ No se tocó la web publicada ni la rama `main` de este repositorio.
 ### Otras cosas que vimos
 
 - El editor dejó guardar un borrador sin el campo obligatorio **Texto** y solo protestó al pasarlo a revisión ("La entrada tiene errores. Corrígelos antes de cambiar el estado."). No tiene que ver con los permisos, pero conviene saberlo.
+- **Cambiar la regla pide confirmar la identidad.** Al activar *Require review from Code Owners*, GitHub pidió "Confirm access" y un código enviado al correo de la cuenta antes de guardar (probado). Quien administre necesita acceso a ese correo, otro motivo para que la cuenta vaya a un correo de la asociación ([RECUPERACION.md](RECUPERACION.md)).
+- **La copia espejo no se sube limpia con `--mirror`**: las ramas sí, pero GitHub rechaza las referencias de las pull requests y el comando acaba en error. Lo apuntamos en [RECUPERACION.md](RECUPERACION.md).
 
 ### Qué falta
 
 1. **Probar `CODEOWNERS` en el caso que importa**: un editor crea un borrador y otro editor lo aprueba. Debería quedarse bloqueado hasta que apruebe una revisora. Hace falta una tercera cuenta con permiso Write que no sea dueña del código.
-2. **Limpiar**: cerrar la pull request #4, borrar el repositorio de prueba y la rama `prueba-permisos`.
+
+La limpieza está hecha: la pull request #4 se cerró sin fusionar y se borraron el repositorio de prueba y la rama `prueba-permisos`.
 
 La regla del build de Cloudflare (regla 4) no se puede probar en la copia sin conectarla a un proyecto de Cloudflare Pages. La dejamos como **documentado**.
