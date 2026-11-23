@@ -123,7 +123,7 @@ Notas para leer la tabla:
 
 **Límites y tareas pendientes**
 
-- No hay roles: todas las personas colaboradoras pueden publicar. La propuesta de editores y revisores con una protección de rama en `main`, lo que se rompería del editor y cómo probarlo están en [PERMISOS.md](PERMISOS.md). Todavía no lo hemos probado.
+- No hay roles: todas las personas colaboradoras pueden publicar. La propuesta de editores y revisores con una protección de rama en `main`, lo que se rompería del editor y cómo probarlo están en [PERMISOS.md](PERMISOS.md). El 23/11 lo probamos contra una copia: el editor no puede publicar sin aprobación, pero la aprobación de otro editor basta, así que hay que añadir `CODEOWNERS`.
 - El token del editor sirve para todos los repositorios públicos de quien inicia sesión.
 - La biblioteca de medios enseña imágenes de borradores ajenos sin publicar, lo que puede romper una vista previa.
 - Las imágenes de noticias borradas se quedan en el repositorio y hay que borrarlas a mano.

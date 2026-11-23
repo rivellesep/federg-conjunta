@@ -53,7 +53,17 @@ Lo probamos el 6/11: la copia ocupa 7,2 MB, tiene las ramas `main` y `sin-github
 git push --mirror https://github.com/NUEVA-CUENTA/federg-conjunta.git
 ```
 
-Esto último no lo hemos probado porque habría que crear otro repositorio. Después hay que cambiar `repo` en `public/admin/config.yml` y, si se usa la opción A, `REPO_OWNER` y `REPO_NAME` en `cms-email/wrangler.toml`.
+Lo probamos el 23/11 al montar el repositorio de la prueba de permisos ([PERMISOS.md](PERMISOS.md)): las ramas se suben bien, pero GitHub rechaza las referencias internas de las pull requests (`refs/pull/*/head`, "deny updating a hidden ref") y el comando termina con error (probado). No se pierde nada, porque esas referencias las crea GitHub, pero para que el comando no acabe en error se puede subir solo lo que importa:
+
+```bash
+git push --all https://github.com/NUEVA-CUENTA/federg-conjunta.git
+```
+
+```bash
+git push --tags https://github.com/NUEVA-CUENTA/federg-conjunta.git
+```
+
+Las pull requests y sus comentarios no se restauran: no están en la copia. Después hay que cambiar `repo` en `public/admin/config.yml` y, si se usa la opción A, `REPO_OWNER` y `REPO_NAME` en `cms-email/wrangler.toml`.
 
 **Los secretos no van en la copia.** Van en un gestor de contraseñas compartido de la asociación, junto con quién tiene acceso a cada cuenta.
 
